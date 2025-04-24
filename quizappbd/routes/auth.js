@@ -1,7 +1,9 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
+const path = require("path");
 const router = express.Router();
 const { registerUser, loginUser } = require("../controllers/userController");
+const multer = require("multer");
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -10,7 +12,7 @@ const authLimiter = rateLimit({
 });
 
 // Upload middleware for registration
-const multer = require("multer");
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, './uploads');

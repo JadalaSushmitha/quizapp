@@ -10,15 +10,15 @@ const sendEmail = async (to, subject, text) => {
     service: "Gmail",
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
+      pass: process.env.EMAIL_PASS,
+    },
   });
 
   try {
     await transporter.sendMail({
       to,
       subject,
-      text
+      text,
     });
   } catch (err) {
     console.error("Error sending email: ", err);
@@ -27,30 +27,49 @@ const sendEmail = async (to, subject, text) => {
 
 // Register user
 exports.registerUser = async (req, res) => {
-  const { full_name, email, phone, college_name } = req.body;
-  const profilePic = req.files?.profilePic?.[0]?.filename || null;
-  const collegeIdCard = req.files?.collegeIdCard?.[0]?.filename || null;
-
-  // Generate random password
-  const rawPassword = crypto.randomBytes(6).toString("hex");
-  const hashedPassword = await bcrypt.hash(rawPassword, 10);
-
   try {
-    const [result] = await db.promise().query(
-      "INSERT INTO users (full_name, email, phone, college_name, profile_pic, college_id_card, password) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [full_name, email, phone, college_name, profilePic, collegeIdCard, hashedPassword]
-    );
+    const { full_name, email, phone, college_name, college_id } = req.body;
+    const profilePic = req.files?.profile_pic?.[0]?.filename || null;
+    const collegeIdCard = req.files?.college_id_card?.[0]?.filename || null;
 
-    // Send password to user email
+    // Validate required fields
+    if (!full_name || !email || !phone || !college_name || !college_id) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Generate random password
+    const rawPassword = crypto.randomBytes(6).toString("hex");
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+    // Save user to DB
+    const [result] = await db
+      .promise()
+      .query(
+        "INSERT INTO users (full_name, email, phone, college_name, college_id, profile_pic, college_id_card, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          full_name,
+          email,
+          phone,
+          college_name,
+          college_id,
+          profilePic,
+          collegeIdCard,
+          hashedPassword,
+        ]
+      );
+
+    // Send password via email
     await sendEmail(
       email,
       "Registration Successful",
       `Hi ${full_name},\n\nYour account has been created.\nYour login password: ${rawPassword}\n\nPlease log in and change your password.`
     );
 
-    res.status(201).json({ message: "User registered and password sent to email" });
+    res
+      .status(201)
+      .json({ message: "User registered and password sent to email" });
   } catch (err) {
-    console.error(err);
+    console.error("Registration error:", err);
     res.status(500).json({ error: "Registration failed" });
   }
 };
@@ -69,7 +88,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     res.json({ token, userId: user.id });
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     res.status(500).json({ error: "Login failed" });
   }
 };
@@ -86,7 +105,7 @@ exports.getUserDashboard = async (req, res) => {
       tests: tests
     });
   } catch (err) {
-    console.error(err);
+    console.error("Dashboard fetch error:", err);
     res.status(500).json({ error: "Dashboard fetch error" });
   }
 };
@@ -112,7 +131,7 @@ exports.changePassword = async (req, res) => {
 
     res.json({ message: "Password changed successfully" });
   } catch (err) {
-    console.error(err);
+    console.error("Password change error:", err);
     res.status(500).json({ error: "Password change failed" });
   }
 };
@@ -141,7 +160,7 @@ exports.resendPassword = async (req, res) => {
 
     res.json({ message: "Password resent successfully" });
   } catch (err) {
-    console.error(err);
+    console.error("Password resend error:", err);
     res.status(500).json({ error: "Failed to resend password" });
   }
 };
