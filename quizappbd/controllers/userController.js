@@ -14,15 +14,7 @@ const sendEmail = async (to, subject, text) => {
     },
   });
 
-  try {
-    await transporter.sendMail({
-      to,
-      subject,
-      text,
-    });
-  } catch (err) {
-    console.error("Error sending email: ", err);
-  }
+  await transporter.sendMail({ to, subject, text });
 };
 
 // Register user
@@ -58,16 +50,24 @@ exports.registerUser = async (req, res) => {
         ]
       );
 
-    // Send password via email
-    await sendEmail(
-      email,
-      "Registration Successful",
-      `Hi ${full_name},\n\nYour account has been created.\nYour login password: ${rawPassword}\n\nPlease log in and change your password.`
-    );
+    // Try to send password via email
+    let emailWarning = null;
+    try {
+      await sendEmail(
+        email,
+        "Registration Successful",
+        `Hi ${full_name},\n\nYour account has been created.\nYour login password: ${rawPassword}\n\nPlease log in and change your password.`
+      );
+    } catch (err) {
+      console.error("Email failed:", err);
+      emailWarning = "User registered, but failed to send confirmation email.";
+    }
 
-    res
-      .status(201)
-      .json({ message: "User registered and password sent to email" });
+    res.status(201).json({
+      success: true,
+      message: emailWarning || "User registered and password sent to email"
+    });
+
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).json({ error: "Registration failed" });
@@ -86,7 +86,20 @@ exports.loginUser = async (req, res) => {
     if (!isMatch) return res.status(401).json({ error: "Invalid password" });
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token, userId: user.id });
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        college_name: user.college_name,
+        college_id: user.college_id,
+        profile_pic: user.profile_pic,
+        college_id_card: user.college_id_card,
+      }
+    });
+
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "Login failed" });
@@ -152,11 +165,16 @@ exports.resendPassword = async (req, res) => {
     await db.promise().query("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
 
     // Send new password via email
-    await sendEmail(
-      email,
-      "Your New Password",
-      `Hi ${user.full_name},\n\nHere is your new password: ${newPassword}\n\nPlease login and change it immediately.`
-    );
+    try {
+      await sendEmail(
+        email,
+        "Your New Password",
+        `Hi ${user.full_name},\n\nHere is your new password: ${newPassword}\n\nPlease login and change it immediately.`
+      );
+    } catch (err) {
+      console.error("Email resend failed:", err);
+      return res.status(500).json({ error: "Password updated, but failed to send email." });
+    }
 
     res.json({ message: "Password resent successfully" });
   } catch (err) {

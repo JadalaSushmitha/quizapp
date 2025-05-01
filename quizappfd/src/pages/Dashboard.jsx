@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance"; // ✅ Import reusable instance
 
 export default function Dashboard() {
   const { id } = useParams(); // user ID from route
@@ -11,20 +11,14 @@ export default function Dashboard() {
   // Fetch user's dashboard info on mount
   useEffect(() => {
     const fetchDashboardData = async () => {
-      try {
-        const token = localStorage.getItem('jwtToken'); // Retrieve token from localStorage
-        if (!token) {
-          // Redirect to login page if no token exists
-          navigate("/login");
-          return;
-        }
+      const token = localStorage.getItem('jwtToken'); // ✅ Still check if token exists
+      if (!token) {
+        navigate("/login"); // ⛔ Unauthorized users redirected
+        return;
+      }
 
-        const res = await axios.get(`http://localhost:5000/api/users/dashboard/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Send JWT token in the Authorization header
-          },
-        });
-        
+      try {
+        const res = await axiosInstance.get(`/users/dashboard/${id}`); // ✅ No need to manually add token
         setTests(res.data.tests);
         setUser(res.data.user);
       } catch (error) {

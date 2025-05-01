@@ -21,18 +21,18 @@ const Login = ({ setUser }) => {
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", formData);
 
-      //  Store JWT token
+      // Store JWT token
       localStorage.setItem("jwtToken", res.data.token);
 
-      //  Optionally store refresh token (if used)
+      // Optionally store refresh token (if used)
       localStorage.setItem("refreshToken", res.data.refreshToken);
 
-      //  Save user state in app
+      // Save user state in app
       setUser(res.data.user);
 
       setMessage("Login successful!");
 
-      //  Redirect to user dashboard
+      // Redirect to user dashboard
       navigate(`/dashboard/${res.data.user.id}`);
 
     } catch (err) {
@@ -52,7 +52,9 @@ const Login = ({ setUser }) => {
     try {
       const res = await axios.post("/api/auth/resend-password", { email: resendEmail });
       setResendMsg(res.data.message);
+      setResendError(""); // Clear any error message if resend is successful
     } catch (err) {
+      setResendMsg(""); // Clear success message if resend fails
       setResendError(err.response?.data?.error || "Failed to resend password.");
     }
   };
