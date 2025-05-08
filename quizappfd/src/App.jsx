@@ -1,6 +1,4 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
 import "./styles/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
@@ -10,21 +8,19 @@ import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null); // ✅ Create user state here
 
   return (
-    <>
-      <BrowserRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setUser={setUser} />} /> {/* ✅ Pass setUser here */}
         <Route path="/dashboard/:id" element={<Dashboard />} />
         <Route path="/test/:testId" element={<TestPage />} />
         <Route path="/result/:userId" element={<ResultPage />} />
       </Routes>
     </BrowserRouter>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;

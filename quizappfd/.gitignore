@@ -2,10 +2,10 @@
 .env
 
 # Node modules
-node_modules
+node_modules/
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -14,21 +14,23 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Build directories
-dist
-dist-ssr
+dist/
+dist-ssr/
 *.local
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
-.idea
-
-# OS generated files
-.DS_Store
-
-# Other IDE/Editor specific files
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# line-ending metadata (Git will auto-handle if present)
+.gitattributes

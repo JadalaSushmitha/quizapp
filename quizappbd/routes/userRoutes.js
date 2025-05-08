@@ -9,6 +9,8 @@ const {
   getUserDashboard,
   submitTest,
   changePassword,
+  resendPassword,
+  getUserResults, 
 } = require("../controllers/userController");
 
 // Import the JWT middleware
@@ -25,8 +27,8 @@ const upload = multer({ storage: storage });
 
 // Routes
 router.post("/register", upload.fields([
-  { name: "profilePic" },
-  { name: "collegeIdCard" }
+  { name: "profile_pic" },
+  { name: "college_id_card" }
 ]), registerUser);
 
 router.post("/login", loginUser);
@@ -34,10 +36,10 @@ router.post("/login", loginUser);
 // Apply JWT middleware to the dashboard route
 router.get("/dashboard/:id", authenticateJWT, getUserDashboard);
 
-router.post("/submit", submitTest);
-router.post("/change-password", changePassword);
+router.post("/submit", authenticateJWT, submitTest);
+router.post("/change-password", authenticateJWT, changePassword);
 
-router.get('/dashboard-direct/:id', async (req, res) => {
+router.get('/dashboard-direct/:id', authenticateJWT, async (req, res) => {
   const userId = req.userId;  // Using userId from the JWT
   try {
     const [user] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
@@ -52,8 +54,8 @@ router.get('/dashboard-direct/:id', async (req, res) => {
   }
 });
 
-const { resendPassword } = require("../controllers/userController");
 
 router.post("/resend-password", resendPassword);
+router.get("/results/:id", authenticateJWT, getUserResults); // ✅ Route for fetching user results
 
 module.exports = router;

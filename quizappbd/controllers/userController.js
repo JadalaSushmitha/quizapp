@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-// Helper function for sending emails
+// Helper: Send email
 const sendEmail = async (to, subject, text) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -21,36 +21,29 @@ const sendEmail = async (to, subject, text) => {
 exports.registerUser = async (req, res) => {
   try {
     const { full_name, email, phone, college_name, college_id } = req.body;
-    const profilePic = req.files?.profile_pic?.[0]?.filename || null;
-    const collegeIdCard = req.files?.college_id_card?.[0]?.filename || null;
+    const profilePic = req.files?.profile_pic?.[0]?.filename;
+    const collegeIdCard = req.files?.college_id_card?.[0]?.filename;
 
-    // Validate required fields
+    console.log("Uploaded Profile Pic:", profilePic);
+    console.log("Uploaded College ID Card:", collegeIdCard);
+
     if (!full_name || !email || !phone || !college_name || !college_id) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Generate random password
+    const [existing] = await db.promise().query("SELECT id FROM users WHERE email = ?", [email]);
+    if (existing.length > 0) {
+      return res.status(400).json({ error: "Email already registered" });
+    }
+
     const rawPassword = crypto.randomBytes(6).toString("hex");
-    const hashedPassword = await bcrypt.hash(rawPassword, 10);
+    const hashedPassword = await bcrypt.hash(rawPassword, 12);
 
-    // Save user to DB
-    const [result] = await db
-      .promise()
-      .query(
-        "INSERT INTO users (full_name, email, phone, college_name, college_id, profile_pic, college_id_card, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          full_name,
-          email,
-          phone,
-          college_name,
-          college_id,
-          profilePic,
-          collegeIdCard,
-          hashedPassword,
-        ]
-      );
+    await db.promise().query(
+      "INSERT INTO users (full_name, email, phone, college_name, college_id, profile_pic, college_id_card, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [full_name, email, phone, college_name, college_id, profilePic, collegeIdCard, hashedPassword]
+    );
 
-    // Try to send password via email
     let emailWarning = null;
     try {
       await sendEmail(
@@ -67,7 +60,6 @@ exports.registerUser = async (req, res) => {
       success: true,
       message: emailWarning || "User registered and password sent to email"
     });
-
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).json({ error: "Registration failed" });
@@ -99,20 +91,27 @@ exports.loginUser = async (req, res) => {
         college_id_card: user.college_id_card,
       }
     });
-
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: "Login failed" });
   }
 };
 
-// Get user dashboard
+// Get dashboard
 exports.getUserDashboard = async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user?.id || req.params.id;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is missing" });
+  }
+
   try {
     const [user] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
-    const [tests] = await db.promise().query("SELECT * FROM tests WHERE user_id = ?", [userId]);
+    if (user.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
+    const [tests] = await db.promise().query("SELECT * FROM tests");
     res.json({
       user: user[0],
       tests: tests
@@ -125,8 +124,21 @@ exports.getUserDashboard = async (req, res) => {
 
 // Submit test
 exports.submitTest = async (req, res) => {
-  // Your implementation
-  res.json({ message: "Test submitted successfully" });
+  const { userId, testId, answers } = req.body;
+
+  try {
+    for (const answer of answers) {
+      await db.promise().query(
+        "INSERT INTO test_responses (user_id, test_id, question_id, selected_option) VALUES (?, ?, ?, ?)",
+        [userId, testId, answer.question_id, answer.selected_option]
+      );
+    }
+
+    res.json({ message: "Test submitted successfully" });
+  } catch (err) {
+    console.error("Test submission error:", err);
+    res.status(500).json({ error: "Test submission failed" });
+  }
 };
 
 // Change password
@@ -139,7 +151,7 @@ exports.changePassword = async (req, res) => {
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) return res.status(401).json({ error: "Incorrect old password" });
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     await db.promise().query("UPDATE users SET password = ? WHERE id = ?", [hashedNewPassword, userId]);
 
     res.json({ message: "Password changed successfully" });
@@ -157,14 +169,11 @@ exports.resendPassword = async (req, res) => {
     const user = users[0];
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // Generate new random password
     const newPassword = crypto.randomBytes(6).toString("hex");
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // Update password in DB
     await db.promise().query("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
 
-    // Send new password via email
     try {
       await sendEmail(
         email,
@@ -180,5 +189,24 @@ exports.resendPassword = async (req, res) => {
   } catch (err) {
     console.error("Password resend error:", err);
     res.status(500).json({ error: "Failed to resend password" });
+  }
+};
+
+// Get user results
+exports.getUserResults = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const [results] = await db.promise().query(
+      `SELECT s.*, t.test_name 
+       FROM submissions s 
+       JOIN tests t ON s.test_id = t.id 
+       WHERE s.user_id = ?`,
+      [userId]
+    );
+
+    res.json(results);
+  } catch (err) {
+    console.error("Result fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch results" });
   }
 };

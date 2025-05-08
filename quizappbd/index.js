@@ -4,6 +4,7 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
+const rateLimit = require("express-rate-limit"); // ✅ Added
 
 // Import routes
 const authRoutes = require("./routes/auth");
@@ -17,6 +18,16 @@ app.use(cors({
   origin: "http://localhost:5173", 
   credentials: true
 }));
+
+// ✅ Rate Limiting Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max requests per IP
+});
+
+// ✅ Apply to specific routes
+app.use("/api/auth/login", limiter);
+app.use("/api/auth/reset-password", limiter);
 
 // ✅ Middlewares
 app.use(express.json());

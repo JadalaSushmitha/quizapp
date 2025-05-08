@@ -1,75 +1,129 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosInstance"; // ✅ Import reusable instance
+import axiosInstance from "../utils/axiosInstance";
+import "./../styles/Dashboard.css"; 
 
 export default function Dashboard() {
-  const { id } = useParams(); // user ID from route
-  const [tests, setTests] = useState([]);
-  const [user, setUser] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("courses");
+  const [user, setUser] = useState(null);
+  const [tests, setTests] = useState([]);
+  const [results, setResults] = useState([]);
 
-  // Fetch user's dashboard info on mount
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const token = localStorage.getItem('jwtToken'); // ✅ Still check if token exists
+      const token = localStorage.getItem("jwtToken");
       if (!token) {
-        navigate("/login"); // ⛔ Unauthorized users redirected
+        navigate("/login");
         return;
       }
 
       try {
-        const res = await axiosInstance.get(`/users/dashboard/${id}`); // ✅ No need to manually add token
-        setTests(res.data.tests);
+        const res = await axiosInstance.get(`/users/dashboard/${id}`);
         setUser(res.data.user);
+        setTests(res.data.tests);
+
+        const resultRes = await axiosInstance.get(`/users/results/${id}`);
+        setResults(resultRes.data);
       } catch (error) {
-        alert("Failed to load dashboard data");
+        alert("Failed to load dashboard");
       }
     };
 
     fetchDashboardData();
   }, [id, navigate]);
 
-  return (
-    <div className="dashboard-container">
-      <header style={{ padding: '1rem', backgroundColor: '#f0f0f0' }}>
-        <h2>Welcome, {user?.full_name || "Student"}</h2>
-        <p>Enrolled Tests:</p>
-      </header>
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    navigate("/login");
+  };
 
-      <main style={{ padding: '1rem' }}>
-        {tests.length > 0 ? (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {tests.map(test => (
-              <li key={test.id} style={{
-                border: "1px solid #ccc",
-                marginBottom: "1rem",
-                padding: "1rem",
-                borderRadius: "8px"
-              }}>
-                <h4>{test.test_name}</h4>
-                <p>Course: {test.course_name}</p>
-                <button
-                  onClick={() => navigate(`/test/${test.id}`, {
-                    state: { userId: id }
-                  })}
-                  style={{
-                    padding: "0.5rem 1rem",
-                    backgroundColor: "#4caf50",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer"
-                  }}
-                >
-                  Start Test
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No tests assigned yet.</p>
-        )}
-      </main>
+  return (
+    <div className="dashboard-wrapper">
+      <aside className="sidebar">
+        <h3>Menu</h3>
+        <button onClick={() => setActiveTab("courses")}>📘 My Courses</button>
+        <button onClick={() => setActiveTab("results")}>📊 Results</button>
+      </aside>
+
+      <div className="main-content">
+        <div className="top-bar">
+          <div className="profile-dropdown">
+            <img
+              src={`http://localhost:5000/uploads/${user?.profile_pic}`} // ✅ Corrected
+              alt="Profile"
+              className="profile-img"
+            />
+            <div className="dropdown">
+              <p onClick={() => navigate("/profile")}>My Profile</p>
+              <p onClick={() => navigate("/change-password")}>Change Password</p>
+              <p onClick={handleLogout}>Logout</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="content-area">
+          <h2>Welcome, {user?.full_name}</h2>
+
+          {activeTab === "courses" && (
+            <>
+              <h3>Available Tests</h3>
+              {tests.length > 0 ? (
+                <ul className="test-list">
+                  {tests.map(test => (
+                    <li key={test.id}>
+                      <h4>{test.test_name}</h4>
+                      <p>Course: {test.course_name}</p>
+                      <button
+                        onClick={() =>
+                          navigate(`/test/${test.id}`, {
+                            state: { userId: id },
+                          })
+                        }
+                      >
+                        Start Test
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No tests assigned.</p>
+              )}
+            </>
+          )}
+
+          {activeTab === "results" && (
+            <>
+              <h3>Test Results</h3>
+              {results.length > 0 ? (
+                <table className="results-table">
+                  <thead>
+                    <tr>
+                      <th>Test</th>
+                      <th>Score</th>
+                      <th>Percentage</th>
+                      <th>Rank</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.map(res => (
+                      <tr key={res.id}>
+                        <td>{res.test_name}</td>
+                        <td>{res.score}</td>
+                        <td>{res.percentage}%</td>
+                        <td>{res.rank}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No results found.</p>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
