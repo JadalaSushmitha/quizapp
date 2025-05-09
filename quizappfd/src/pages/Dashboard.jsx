@@ -56,7 +56,7 @@ export default function Dashboard() {
               className="profile-img"
             />
             <div className="dropdown">
-              <p onClick={() => navigate("/profile")}>My Profile</p>
+              <p onClick={() => navigate(`/profile/${id}`)}>My Profile</p>
               <p onClick={() => navigate("/change-password")}>Change Password</p>
               <p onClick={handleLogout}>Logout</p>
             </div>

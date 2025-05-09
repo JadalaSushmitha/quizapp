@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import MyProfile from "./pages/MyProfile";
 import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/dashboard/:id" element={<Dashboard />} />
         <Route path="/test/:testId" element={<TestPage />} />
         <Route path="/result/:userId" element={<ResultPage />} />
+        <Route path="/profile/:id" element={<MyProfile />} /> 
       </Routes>
     </BrowserRouter>
   );

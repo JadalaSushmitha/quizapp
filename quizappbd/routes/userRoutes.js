@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
+const path = require("path");
 const db = require("../models/db");
-
 const {
   registerUser,
   loginUser,
@@ -10,37 +10,37 @@ const {
   submitTest,
   changePassword,
   resendPassword,
-  getUserResults, 
+  getUserResults
 } = require("../controllers/userController");
+const authenticateJWT = require("../middleware/authMiddleware");
 
-// Import the JWT middleware
-const authenticateJWT = require('../middleware/authMiddleware');
-
-// File Uploads
+// Updated Multer storage logic to avoid same filename
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "_" + file.originalname);
+    const ext = path.extname(file.originalname);
+    const fieldPrefix = file.fieldname === "profile_pic" ? "PROFILE" : "IDCARD";
+    cb(null, `${fieldPrefix}_${Date.now()}${ext}`);
   },
 });
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Routes
 router.post("/register", upload.fields([
   { name: "profile_pic" },
   { name: "college_id_card" }
 ]), registerUser);
 
 router.post("/login", loginUser);
-
-// Apply JWT middleware to the dashboard route
 router.get("/dashboard/:id", authenticateJWT, getUserDashboard);
 
 router.post("/submit", authenticateJWT, submitTest);
 router.post("/change-password", authenticateJWT, changePassword);
+router.post("/resend-password", resendPassword);
 
-router.get('/dashboard-direct/:id', authenticateJWT, async (req, res) => {
-  const userId = req.userId;  // Using userId from the JWT
+router.get("/results/:id", authenticateJWT, getUserResults);
+
+router.get("/dashboard-direct/:id", authenticateJWT, async (req, res) => {
+  const userId = req.userId;
   try {
     const [user] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
     const [tests] = await db.promise().query("SELECT * FROM tests WHERE user_id = ?", [userId]);
@@ -53,9 +53,5 @@ router.get('/dashboard-direct/:id', authenticateJWT, async (req, res) => {
     res.status(500).json({ error: "Dashboard fetch error" });
   }
 });
-
-
-router.post("/resend-password", resendPassword);
-router.get("/results/:id", authenticateJWT, getUserResults); // ✅ Route for fetching user results
 
 module.exports = router;
