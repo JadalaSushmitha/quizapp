@@ -53,7 +53,7 @@ const Register = () => {
 
             setMsg(res.data.message);
 
-            // ✅ Show email warning alert if email failed
+            // Show email warning alert if email failed
             if (res.data.message?.toLowerCase().includes("failed to send confirmation email")) {
                 alert(res.data.message); // You can replace this with a toast if using a toast library
             }

@@ -14,7 +14,12 @@ const sendEmail = async (to, subject, text) => {
     },
   });
 
-  await transporter.sendMail({ to, subject, text });
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to,
+    subject,
+    text,
+  });
 };
 
 // Register user
@@ -143,21 +148,53 @@ exports.submitTest = async (req, res) => {
 
 // Change password
 exports.changePassword = async (req, res) => {
-  const { userId, oldPassword, newPassword } = req.body;
+  const userId = req.user.id; // from JWT middleware
+  const { oldPassword, newPassword } = req.body;
+
   try {
-    const [users] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
-    const user = users[0];
+    // Use promise().query for async/await
+    const [rows] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
+    if (rows.length === 0) return res.status(404).json({ message: "User not found" });
 
+    const user = rows[0];
+
+    // Compare old password
     const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Incorrect old password" });
+    if (!isMatch) return res.status(400).json({ message: "Old password is incorrect." });
 
-    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
-    await db.promise().query("UPDATE users SET password = ? WHERE id = ?", [hashedNewPassword, userId]);
+    // Validate new password policy
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({ message: "New password does not meet the criteria." });
+    }
 
-    res.json({ message: "Password changed successfully" });
-  } catch (err) {
-    console.error("Password change error:", err);
-    res.status(500).json({ error: "Password change failed" });
+    // Check if new password is same as old
+    const isSame = await bcrypt.compare(newPassword, user.password);
+    if (isSame) return res.status(400).json({ message: "New password must be different from the old password." });
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    // Update password
+    await db.promise().query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
+
+    // Email notification
+    await sendEmail(user.email, "Password Changed Successfully", `
+Dear ${user.full_name},
+
+Your password has been changed successfully.
+
+If you did not perform this change, please contact support immediately.
+
+Best Regards,
+nDMatrix
+    `);
+
+    return res.json({ message: "Password changed successfully." });
+
+  } catch (error) {
+    console.error("Change Password Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

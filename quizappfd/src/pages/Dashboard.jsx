@@ -51,7 +51,7 @@ export default function Dashboard() {
         <div className="top-bar">
           <div className="profile-dropdown">
             <img
-              src={`http://localhost:5000/uploads/${user?.profile_pic}`} // ✅ Corrected
+              src={`http://localhost:5000/uploads/${user?.profile_pic}`} 
               alt="Profile"
               className="profile-img"
             />

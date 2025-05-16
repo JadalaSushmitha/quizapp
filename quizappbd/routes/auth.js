@@ -12,7 +12,7 @@ const {
 } = require("../controllers/userController");
 const authenticateJWT = require("../middleware/authMiddleware");
 
-// Multer storage config to avoid filename collision
+// Multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "./uploads"),
   filename: (req, file, cb) => {
