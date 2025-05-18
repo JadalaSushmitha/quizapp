@@ -1,0 +1,34 @@
+
+#back-to-top {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #555; /* Dark gray background */
+  color: white;
+  width: 50px;
+  height: 40px;
+  border-radius: 8px; /* Rounded rectangle */
+  text-align: center;
+  line-height: 40px;
+  font-size: 1.2em;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+#back-to-top:hover {
+  opacity: 1;
+  background-color: #007bff; /* Blue on hover */
+}
+
+#back-to-top i {
+  
+  line-height: inherit; /*  vertical centering of the icon */
+}
+
+/* Show the button when the user scrolls down a bit */
+.show {
+  display: block !important; /* Use .show class to control visibility */
+}

@@ -1,0 +1,55 @@
+.terms-container {
+  font-family: 'Open Sans', sans-serif; /* A readable font */
+  padding: 40px;
+  margin: 30px auto;
+  max-width: 900px;
+  border: 1px solid #d1d8e0; /* Light gray border */
+  border-radius: 10px;
+  background-color: #f7f9fa; /* Very light gray background */
+  line-height: 1.7;
+  color: #5e6e82; /* Medium gray text */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* Soft shadow */
+}
+
+.terms-container h1 {
+  color: #33475b; /* Dark blue heading */
+  text-align: center;
+  margin-bottom: 35px;
+  font-size: 2.6em;
+  font-weight: 700;
+}
+
+.terms-container h2 {
+  color: #2c80eb; /* Primary blue for subheadings */
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e0e6ed; /* Very light gray border */
+  padding-bottom: 10px;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.terms-container p {
+  margin-bottom: 20px;
+}
+
+.terms-container ul {
+  list-style-type: none; /* Remove default bullets */
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.terms-container li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 10px;
+}
+
+.terms-container li::before {
+  content: '•'; /* Standard bullet */
+  color: #2c80eb; /* Primary blue bullet color */
+  position: absolute;
+  left: 0;
+  top: 3px;
+  font-size: 1em;
+}

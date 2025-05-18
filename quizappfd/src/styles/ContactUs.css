@@ -1,0 +1,50 @@
+.contact-us-container {
+  font-family: sans-serif;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 20px;
+  background-color: #f9f9f9;
+}
+
+.contact-us-container h2 {
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.contact-details {
+  margin-top: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.detail-item i {
+  margin-right: 10px;
+  color: #007bff; /*  icon color */
+}
+
+.detail-item strong {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.detail-item a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.detail-item a:hover {
+  text-decoration: underline;
+}
+
+.copyright {
+  margin-top: 25px;
+  font-size: 0.9em;
+  color: #777;
+  text-align: center;
+}
