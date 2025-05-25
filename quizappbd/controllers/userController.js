@@ -23,14 +23,11 @@ const sendEmail = async (to, subject, text) => {
 };
 
 // Register user
-exports.registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { full_name, email, phone, college_name, college_id } = req.body;
     const profilePic = req.files?.profile_pic?.[0]?.filename;
     const collegeIdCard = req.files?.college_id_card?.[0]?.filename;
-
-    console.log("Uploaded Profile Pic:", profilePic);
-    console.log("Uploaded College ID Card:", collegeIdCard);
 
     if (!full_name || !email || !phone || !college_name || !college_id) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -72,7 +69,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // Login user
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const [users] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
@@ -103,7 +100,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Get dashboard
-exports.getUserDashboard = async (req, res) => {
+const getUserDashboard = async (req, res) => {
   const userId = req.user?.id || req.params.id;
 
   if (!userId) {
@@ -127,58 +124,31 @@ exports.getUserDashboard = async (req, res) => {
   }
 };
 
-// Submit test
-exports.submitTest = async (req, res) => {
-  const { userId, testId, answers } = req.body;
-
-  try {
-    for (const answer of answers) {
-      await db.promise().query(
-        "INSERT INTO test_responses (user_id, test_id, question_id, selected_option) VALUES (?, ?, ?, ?)",
-        [userId, testId, answer.question_id, answer.selected_option]
-      );
-    }
-
-    res.json({ message: "Test submitted successfully" });
-  } catch (err) {
-    console.error("Test submission error:", err);
-    res.status(500).json({ error: "Test submission failed" });
-  }
-};
 
 // Change password
-exports.changePassword = async (req, res) => {
-  const userId = req.user.id; // from JWT middleware
+const changePassword = async (req, res) => {
+  const userId = req.user.id;
   const { oldPassword, newPassword } = req.body;
 
   try {
-    // Use promise().query for async/await
     const [rows] = await db.promise().query("SELECT * FROM users WHERE id = ?", [userId]);
     if (rows.length === 0) return res.status(404).json({ message: "User not found" });
 
     const user = rows[0];
-
-    // Compare old password
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) return res.status(400).json({ message: "Old password is incorrect." });
 
-    // Validate new password policy
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({ message: "New password does not meet the criteria." });
     }
 
-    // Check if new password is same as old
     const isSame = await bcrypt.compare(newPassword, user.password);
     if (isSame) return res.status(400).json({ message: "New password must be different from the old password." });
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-
-    // Update password
     await db.promise().query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
 
-    // Email notification
     await sendEmail(user.email, "Password Changed Successfully", `
 Dear ${user.full_name},
 
@@ -199,7 +169,7 @@ nDMatrix
 };
 
 // Resend password
-exports.resendPassword = async (req, res) => {
+const resendPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const [users] = await db.promise().query("SELECT * FROM users WHERE email = ?", [email]);
@@ -208,19 +178,13 @@ exports.resendPassword = async (req, res) => {
 
     const newPassword = crypto.randomBytes(6).toString("hex");
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-
     await db.promise().query("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
 
-    try {
-      await sendEmail(
-        email,
-        "Your New Password",
-        `Hi ${user.full_name},\n\nHere is your new password: ${newPassword}\n\nPlease login and change it immediately.`
-      );
-    } catch (err) {
-      console.error("Email resend failed:", err);
-      return res.status(500).json({ error: "Password updated, but failed to send email." });
-    }
+    await sendEmail(
+      email,
+      "Your New Password",
+      `Hi ${user.full_name},\n\nHere is your new password: ${newPassword}\n\nPlease login and change it immediately.`
+    );
 
     res.json({ message: "Password resent successfully" });
   } catch (err) {
@@ -229,21 +193,90 @@ exports.resendPassword = async (req, res) => {
   }
 };
 
-// Get user results
-exports.getUserResults = async (req, res) => {
+// Get results
+const getUserResults = async (req, res) => {
   const userId = req.params.id;
+
   try {
-    const [results] = await db.promise().query(
-      `SELECT s.*, t.test_name 
-       FROM submissions s 
-       JOIN tests t ON s.test_id = t.id 
-       WHERE s.user_id = ?`,
-      [userId]
-    );
+    const [results] = await db.promise().query(`
+      SELECT 
+        r.result_id,
+        r.test_id,
+        t.test_name,
+        r.score,
+        r.total_questions,
+        r.correct_answers,
+        r.attempted_questions,
+        r.percentage,
+        r.submission_time
+      FROM test_results r
+      JOIN tests t ON r.test_id = t.id
+      WHERE r.user_id = ?
+      ORDER BY r.submission_time DESC
+    `, [userId]);
 
     res.json(results);
   } catch (err) {
     console.error("Result fetch error:", err);
     res.status(500).json({ error: "Failed to fetch results" });
   }
+};
+
+
+// Get courses and tests
+// Add .promise() to ensure queries support async/await
+const getCoursesAndTests = async (req, res) => {
+  try {
+    const [rows] = await db.promise().query('SELECT * FROM tests');
+    const grouped = {};
+    rows.forEach(test => {
+      if (!grouped[test.course_name]) {
+        grouped[test.course_name] = [];
+      }
+      grouped[test.course_name].push({
+        test_id: test.id,
+        test_name: test.test_name
+      });
+    });
+
+    const courseList = Object.entries(grouped).map(([course_name, tests]) => ({
+      course_name,
+      tests
+    }));
+
+    res.json(courseList);
+  } catch (error) {
+    console.error('Error fetching courses and tests:', error);
+    res.status(500).json({ message: 'Server error', details: error.message });
+  }
+};
+
+// Update User Profile
+const updateUserProfile = async (req, res) => { //
+  const { id } = req.params; //
+  const { full_name, phone, college_name } = req.body; //
+
+  try {
+    await db.promise().query( //
+      `UPDATE users SET full_name = ?, phone = ?, college_name = ? WHERE id = ?`, //
+      [full_name, phone, college_name, id] //
+    );
+    res.json({ message: "Profile updated successfully" }); //
+  } catch (err) {
+    console.error("Profile update error:", err); // Added for better logging
+    res.status(500).json({ error: "Failed to update profile" }); //
+  }
+};
+
+// Export all
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserDashboard,
+  changePassword,
+  resendPassword,
+  getUserResults,
+  getCoursesAndTests,
+  sendEmail,
+  updateUserProfile
 };

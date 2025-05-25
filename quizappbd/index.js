@@ -9,6 +9,8 @@ const rateLimit = require("express-rate-limit");
 // Import routes
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/userRoutes");
+const testRoutes = require("./routes/testRoutes");
+const resultRoutes = require("./routes/resultRoutes");
 
 const app = express();
 const PORT = 5000;
@@ -48,6 +50,8 @@ const upload = multer({ storage: storage });
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", testRoutes);
+app.use("/api/result", resultRoutes);
 
 // Root Route
 app.get('/', (req, res) => {

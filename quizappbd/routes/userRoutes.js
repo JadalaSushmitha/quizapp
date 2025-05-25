@@ -7,10 +7,11 @@ const {
   registerUser,
   loginUser,
   getUserDashboard,
-  submitTest,
   changePassword,
   resendPassword,
-  getUserResults
+  getCoursesAndTests,
+  getUserResults,
+  updateUserProfile 
 } = require("../controllers/userController");
 const authenticateJWT = require("../middleware/authMiddleware");
 
@@ -35,9 +36,10 @@ router.post("/resend-password", resendPassword);
 
 // Protected routes
 router.get("/dashboard/:id", authenticateJWT, getUserDashboard);
-router.post("/submit", authenticateJWT, submitTest);
 router.post("/change-password", authenticateJWT, changePassword);
+router.get('/courses', authenticateJWT, getCoursesAndTests);
 router.get("/results/:id", authenticateJWT, getUserResults);
+router.put("/profile/:id", authenticateJWT, updateUserProfile);
 
 // Sample route with JWT data
 router.get("/dashboard-direct/:id", authenticateJWT, async (req, res) => {

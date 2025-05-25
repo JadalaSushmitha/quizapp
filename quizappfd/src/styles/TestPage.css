@@ -1,0 +1,549 @@
+/* quizappfd/src/styles/TestPage.css */
+
+.test-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Light background */
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #333;
+}
+
+.test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.test-title {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.test-timer {
+  font-size: 1.4em;
+  font-weight: 700;
+  color: #e74c3c; /* Red for urgency */
+}
+
+.test-timer span {
+  background-color: #fbe6e6;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.test-timer span.time-critical {
+    color: #c0392b; /* Even darker red for very low time */
+    animation: pulse 1s infinite alternate; /* Optional: add a pulse effect */
+}
+
+@keyframes pulse {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.05); opacity: 0.8; }
+}
+
+
+.test-main-content {
+  flex-grow: 1;
+  display: flex;
+  padding: 20px;
+  gap: 20px; /* Space between question panel and palette */
+}
+
+/* --- Question Panel --- */
+.question-panel {
+  flex-grow: 1;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  transition: flex-grow 0.3s ease-in-out; /* Smooth transition for expansion */
+}
+
+.question-panel.expanded {
+  flex-grow: 3; /* Take more space when palette is collapsed */
+}
+
+.question-header {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #2563eb; /* Blue accent */
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.question-text {
+  font-size: 1.2em;
+  line-height: 1.7;
+  margin-bottom: 30px;
+  color: #444;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.option-label:hover {
+  background-color: #eef7ff;
+  border-color: #2563eb;
+}
+
+.option-label input[type="radio"] {
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+  accent-color: #2563eb; /* Blue for selected radio */
+}
+
+.option-text {
+  font-size: 1.1em;
+  color: #333;
+}
+
+.nat-input-container {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.nat-input-container label {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #555;
+}
+
+.nat-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 15px;
+  font-size: 1.3em;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fcfcfc;
+}
+
+.nat-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  outline: none;
+}
+
+.question-navigation-buttons {
+  display: flex;
+  justify-content: space-between; /* Distribute buttons */
+  margin-top: auto; /* Push buttons to the bottom */
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.nav-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.nav-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.nav-button.prev {
+  background-color: #6c757d;
+  color: #fff;
+}
+.nav-button.prev:hover:not(:disabled) {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.nav-button.clear {
+  background-color: #ffc107;
+  color: #333;
+}
+.nav-button.clear:hover:not(:disabled) {
+  background-color: #e0a800;
+  transform: translateY(-1px);
+}
+
+.nav-button.mark-review {
+  background-color: #007bff; /* Blue for mark review */
+  color: #fff;
+}
+.nav-button.mark-review:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.nav-button.save-next {
+  background-color: #28a745; /* Green for save next */
+  color: #fff;
+}
+.nav-button.save-next:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+/* --- Question Palette Panel --- */
+.question-palette-panel {
+  width: 300px;
+  flex-shrink: 0; /* Prevent it from shrinking */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* For the toggle button */
+  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.question-palette-panel.collapsed {
+  width: 50px; /* Collapse width */
+  padding: 20px 5px; /* Adjust padding when collapsed */
+  overflow: hidden; /* Hide content */
+}
+
+.palette-toggle-button {
+  position: absolute;
+  left: -20px; /* Position to the left edge of the palette */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 0 5px 5px 0; /* Rounded on the right side */
+  padding: 10px 5px;
+  cursor: pointer;
+  font-size: 1.5em;
+  line-height: 1;
+  transition: background-color 0.2s ease;
+  z-index: 11; /* Ensure it's above other elements */
+}
+
+.palette-toggle-button:hover {
+  background-color: #1a4dbe;
+}
+
+
+.palette-header {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 10px;
+  margin-bottom: 25px;
+  max-height: 400px; /* Limit height for scrollable questions */
+  overflow-y: auto; /* Make question grid scrollable */
+  padding-right: 5px; /* Prevent scrollbar from overlapping last column */
+}
+
+.question-number-box {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Circle shape */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+.question-number-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.question-number-box.active {
+  border: 2px solid #2563eb; /* Active question has a prominent border */
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+  transform: scale(1.08);
+}
+
+/* Question Status Colors (matching GATE-like instructions) */
+.question-number-box.not-visited {
+  background-color: #a0a0a0; /* Grey */
+  color: #fff;
+}
+.question-number-box.not-answered {
+  background-color: #ff0000; /* Red */
+  color: #fff;
+}
+.question-number-box.answered {
+  background-color: #008000; /* Green */
+  color: #fff;
+}
+.question-number-box.marked-for-review {
+  background-color: #ffa500; /* Orange */
+  color: #fff;
+}
+.question-number-box.answered-and-marked-for-review {
+  background-color: #800080; /* Purple */
+  color: #fff;
+}
+
+.palette-legend {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.palette-legend p {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.q-status-box {
+  /* Re-use from InstructionPopup.css for consistency */
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  flex-shrink: 0; /* Prevent box from shrinking */
+}
+
+/* Specific colors for legend boxes (ensure these match the status colors above) */
+.legend-row .q-status-not-visited { background-color: #a0a0a0; }
+.legend-row .q-status-not-answered { background-color: #ff0000; }
+.legend-row .q-status-answered { background-color: #008000; }
+.legend-row .q-status-marked-for-review { background-color: #ffa500; }
+.legend-row .q-status-answered-and-marked-for-review { background-color: #800080; }
+
+
+.legend-text {
+  font-size: 0.95em;
+  color: #555;
+}
+
+.submit-test-button {
+  display: block;
+  width: 90%;
+  margin: 30px auto 0;
+  padding: 15px 0;
+  background-color: #007bff; /* Blue for submit */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.15em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.submit-test-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Loading state */
+.test-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.5em;
+  color: #555;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light grey */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* SweetAlert Custom Styles (optional, but good for consistent look) */
+.my-swal-container {
+  font-family: "Segoe UI", Arial, sans-serif;
+  z-index: 10000 !important; /* Ensure it's on top of everything */
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .test-main-content {
+    flex-direction: column; /* Stack panels on smaller screens */
+  }
+
+  .question-palette-panel {
+    width: 100%;
+    max-width: none;
+    order: -1; /* Place palette above question panel on small screens */
+    margin-bottom: 20px;
+  }
+
+  .question-palette-panel.collapsed {
+    width: 100%; /* Keep full width even when collapsed to show toggle */
+    padding: 10px 20px;
+    height: 50px;
+    overflow: hidden;
+  }
+
+  .question-palette-panel.collapsed .palette-toggle-button {
+    left: auto;
+    right: 20px; /* Move toggle button to right when collapsed */
+    transform: translateY(-50%) rotate(180deg); /* Rotate for collapsed state */
+    border-radius: 5px; /* Adjust border radius */
+  }
+
+  .question-palette-panel:not(.collapsed) .palette-toggle-button {
+    left: auto;
+    right: 20px;
+    transform: translateY(-50%);
+    border-radius: 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .test-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 20px;
+  }
+
+  .test-title {
+    font-size: 1.3em;
+    margin-bottom: 5px;
+  }
+
+  .test-timer {
+    font-size: 1.2em;
+  }
+
+  .test-main-content {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .question-panel, .question-palette-panel {
+    padding: 20px;
+  }
+
+  .question-header {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .question-text {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+  }
+
+  .option-label {
+    padding: 12px 15px;
+  }
+
+  .option-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .option-text {
+    font-size: 1em;
+  }
+
+  .nat-input {
+    font-size: 1.1em;
+    padding: 10px 12px;
+  }
+
+  .question-navigation-buttons {
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center;
+    gap: 10px; /* Space between wrapped buttons */
+  }
+
+  .nav-button {
+    padding: 10px 18px;
+    font-size: 0.9em;
+  }
+
+  .question-grid {
+    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+    gap: 8px;
+  }
+
+  .question-number-box {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-header {
+    padding: 10px 15px;
+  }
+  .test-title { font-size: 1.1em; }
+  .test-timer { font-size: 1em; }
+  .test-main-content { padding: 10px; gap: 10px; }
+  .question-panel, .question-palette-panel { padding: 15px; }
+  .question-header { font-size: 1.3em; }
+  .question-text { font-size: 1em; }
+  .option-label { padding: 10px 12px; }
+  .option-label input[type="radio"] { width: 16px; height: 16px; }
+  .option-text { font-size: 0.9em; }
+  .nat-input { font-size: 1em; }
+  .nav-button { padding: 8px 15px; font-size: 0.85em; }
+  .question-grid { gap: 6px; }
+  .question-number-box { width: 30px; height: 30px; font-size: 0.8em; }
+}

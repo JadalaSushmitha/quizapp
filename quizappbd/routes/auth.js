@@ -6,7 +6,6 @@ const {
   registerUser,
   loginUser,
   getUserDashboard,
-  submitTest,
   changePassword,
   resendPassword
 } = require("../controllers/userController");
@@ -31,7 +30,6 @@ router.post("/register", upload.fields([
 router.post("/login", loginUser);
 router.post("/resend-password", resendPassword);
 router.get("/dashboard", authenticateJWT, getUserDashboard);
-router.post("/submit", authenticateJWT, submitTest);
 router.post("/change-password", authenticateJWT, changePassword);
 
 module.exports = router;

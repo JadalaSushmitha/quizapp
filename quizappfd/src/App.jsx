@@ -10,8 +10,11 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import MyProfile from "./pages/MyProfile";
 import ChangePassword from "./pages/ChangePassword";
+import Courses from './pages/Courses';
+import InstructionPopup from "./pages/InstructionPopup";
 import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
+import SolutionPage from "./pages/SolutionPage";
 
 function App() {
   const [user, setUser] = useState(null); // Create user state here
@@ -19,7 +22,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-                <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -28,8 +31,11 @@ function App() {
         <Route path="/dashboard/:id" element={<Dashboard />} />
         <Route path="/profile/:id" element={<MyProfile />} /> 
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/instructions/:testId" element={<InstructionPopup />} />
         <Route path="/test/:testId" element={<TestPage />} />
-        <Route path="/result/:userId" element={<ResultPage />} />
+        <Route path="/result/:resultId" element={<ResultPage />} />
+        <Route path="/solution/:resultId" element={<SolutionPage />} />
       </Routes>
     </BrowserRouter>
   );
