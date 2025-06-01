@@ -1,304 +1,948 @@
+/* Dashboard.css - Styled for a modern, glassmorphism dashboard experience, matching register.css */
+
 .dashboard-wrapper {
-  display: flex;
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f8;
-  color: #333;
+    display: flex;
+    min-height: 100vh;
+    /* Full viewport height */
+    font-family: "Open Sans", sans-serif;
+    /* Consistent font with register.css */
+    color: #fff;
+    /* Default text color for glassmorphism */
+
+    /* --- Background Image Adjustments (Matching register.css) --- */
+    background-image: url("../assets/bg.jpg");
+    /* You'll need a suitable background image here */
+    background-size: cover;
+    background-position: center;
+    /* Centered for a general dashboard view */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* ----------------------------------------------------------- */
+
+    position: relative;
+    overflow: hidden;
+    /* Hide any overflow from effects */
 }
 
+/* Subtle background overlay and animation for visual depth (Matching register.css) */
+.dashboard-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Using a subtle radial gradient to subtly enhance the light source effect */
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    backdrop-filter: brightness(0.8) contrast(1.1);
+    /* Slightly adjust background image appearance */
+    pointer-events: none;
+    z-index: 0;
+    animation: bgFadeIn 1.5s ease-out forwards;
+    /* 'forwards' keeps the final state */
+}
+
+@keyframes bgFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Decorative elements for extra visual flair (Matching register.css) */
+.dashboard-wrapper::after {
+    content: "";
+    position: absolute;
+    bottom: 10%;
+    /* Adjusted position */
+    left: 15%;
+    /* Adjusted position */
+    width: 250px;
+    /* Slightly larger blob */
+    height: 250px;
+    /* Retained a subtle blue-green glow that fits the background's light accents */
+    background: radial-gradient(
+        circle,
+        rgba(0, 255, 255, 0.2) 0%,
+        rgba(0, 255, 255, 0) 70%
+    );
+    /* Cyan glow */
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: moveBlobDashboard 25s infinite ease-in-out alternate;
+    /* Different animation for variety */
+    z-index: 0;
+}
+
+@keyframes moveBlobDashboard {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(100px, -70px) scale(1.08);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+/* Sidebar Styling - Glassmorphism effect */
 .sidebar {
-  background-color: #2c3e50;
-  color: #fff;
-  padding: 20px;
-  width: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    width: 250px;
+    background: rgba(255, 255, 255, 0.08);
+    /* Slightly more transparent white for glass effect */
+    padding: 30px 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    /* Strong, diffused shadow */
+    backdrop-filter: blur(25px) saturate(180%);
+    /* Increased blur and saturation for more pronounced glass */
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    /* Slightly more prominent border */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center align items in sidebar */
+    z-index: 1;
+    /* Ensure it's above background elements */
+    animation: slideInLeft 0.8s ease-out forwards;
+    /* 'forwards' keeps the final state */
+    flex-shrink: 0;
+    /* Prevent sidebar from shrinking */
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }
 
 .sidebar h3 {
-  margin-bottom: 20px;
-  font-size: 1.6em;
+    color: #fff;
+    font-size: 1.8em;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
 }
 
 .sidebar button {
-  background: none;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: 5px;
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    /* Matching register.css button gradient */
+    background: linear-gradient(90deg, #104e8b 0%, #00ffff 100%);
+    /* Deep Blue to Bright Cyan */
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 25px rgba(16, 78, 139, 0.4);
+    /* Shadow based on the darker blue */
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sidebar button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(16, 78, 139, 0.6);
+    /* Inverted gradient on hover */
+    background: linear-gradient(90deg, #00ffff 0%, #104e8b 100%);
 }
 
+.sidebar button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(16, 78, 139, 0.3);
+}
+
+/* Main Content Area */
 .main-content {
-  flex-grow: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    box-sizing: border-box;
+    z-index: 1;
 }
 
+/* Top Bar - Welcome message and profile dropdown */
 .top-bar {
-  display: flex; /* Make it a flex container */
-  justify-content: space-between; /* Space out children: welcome message and profile dropdown */
-  align-items: center; /* Vertically align items in the middle */
-  padding-bottom: 20px;
-  width: 100%; /* Ensure it takes full width of its parent */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    /* Add some padding below */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle glassmorphism separator */
 }
 
-/* Style for the welcome message */
 .top-bar .welcome-message {
-  margin: 0; /* Remove default margin to align properly with flexbox */
-  font-size: 1.8em; /* Adjust as needed */
-  color: #2c3e50;
+    margin: 0;
+    font-size: 2.2em;
+    /* Slightly larger for prominence */
+    color: #fff;
+    /* White text */
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+/* Profile Dropdown */
 .profile-dropdown {
-  position: relative;
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.profile-dropdown:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(0, 255, 255, 0.6);
+    /* Cyan glow border */
+    box-shadow: 0 0 10px rgba(0, 204, 204, 0.5);
+    /* Cyan glow shadow */
+    transition: all 0.3s ease;
+}
+
+.profile-dropdown:hover .profile-img {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 204, 204, 0.8);
 }
 
 .dropdown {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 10px 0;
-  width: 150px;
-  display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(255, 255, 255, 0.15);
+    /* Glassmorphism background */
+    backdrop-filter: blur(15px) saturate(180%);
+    /* Blur for glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    min-width: 180px;
+    display: none;
+    /* Hidden by default */
+    flex-direction: column;
+    padding: 10px 0;
+    margin-top: 10px;
+    z-index: 10;
 }
 
 .profile-dropdown:hover .dropdown {
-  display: block;
+    display: flex;
+    /* Show on hover */
 }
 
 .dropdown p {
-  padding: 8px 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 0;
+    padding: 12px 20px;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    margin: 0;
+    /* Remove default margin */
 }
 
 .dropdown p:hover {
-  background-color: #f0f0f0;
+    background: rgba(0, 255, 255, 0.15);
+    /* Subtle cyan highlight */
+    color: #fff;
+    transform: translateX(3px);
 }
 
+/* Content Area - Glassmorphism effect */
 .content-area {
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex-grow: 1; /* Allows content area to take remaining space */
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.08);
+    /* Slightly more transparent white for glass effect */
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+    /* Strong, diffused shadow */
+    backdrop-filter: blur(25px) saturate(180%);
+    /* Increased blur and saturation for more pronounced glass */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Slightly more prominent border */
+    overflow-y: auto;
+    /* Enable scrolling for content if it overflows */
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .content-area h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.8px;
+    text-align: center;
 }
 
 .content-area h3 {
-  color: #3498db;
-  margin-top: 20px;
-  margin-bottom: 15px;
+    color: #fff;
+    font-size: 2em;
+    margin-bottom: 25px;
+    border-bottom: 2px solid rgba(0, 255, 255, 0.4);
+    /* Cyan highlight */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Courses Container */
+.courses-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.course-card {
+    background: rgba(255, 255, 255, 0.1);
+    /* Transparent background for cards */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.course-card h4 {
+    color: #fff;
+    font-size: 1.6em;
+    margin: 0 0 20px 0;
+    /* Adjusted margin */
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+    text-align: center;
 }
 
 .test-list {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.test-list li {
-  background-color: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.test-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    /* Darker transparent background for list items */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    color: #c0c0c0;
+    font-size: 1em;
+    transition: all 0.2s ease;
 }
 
-.test-list li h4 {
-  margin: 0 0 5px 0;
-  color: #333;
+.test-item:last-child {
+    margin-bottom: 0;
 }
 
-.test-list li p {
-  color: #666;
-  margin: 0;
+.test-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
 }
 
-.test-list li button {
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.test-item button {
+    padding: 8px 15px;
+    /* Matching register.css button gradient */
+    background: linear-gradient(90deg, #104e8b 0%, #00ffff 100%);
+    /* Deep Blue to Bright Cyan */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 78, 139, 0.3);
 }
 
-.test-list li button:hover {
-  background-color: #219653;
+.test-item button:hover {
+    background: linear-gradient(90deg, #00ffff 0%, #104e8b 100%);
+    /* Inverted for hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 78, 139, 0.5);
 }
 
+.test-item button:active {
+    transform: translateY(0);
+}
+
+/* Results Table */
 .results-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background: rgba(0, 0, 0, 0.15);
+    /* Slightly darker for table background */
+    border-radius: 10px;
+    overflow: hidden;
+    /* Ensures border-radius applies to table content */
 }
 
 .results-table th,
 .results-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
 }
 
 .results-table th {
-  background-color: #f0f0f0;
-  font-weight: bold;
+    background: rgba(0, 255, 255, 0.1);
+    /* Cyan header background */
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.results-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+.results-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-/* ChangePassword.css */
+.results-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.results-table td button {
+    padding: 8px 12px;
+    /* Matching register.css button gradient */
+    background: linear-gradient(90deg, #104e8b 0%, #00ffff 100%);
+    /* Deep Blue to Bright Cyan */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(16, 78, 139, 0.2);
+}
+
+.results-table td button:hover {
+    background: linear-gradient(90deg, #00ffff 0%, #104e8b 100%);
+    /* Inverted for hover */
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(16, 78, 139, 0.4);
+}
+
+.results-table td button:active {
+    transform: translateY(0);
+}
+
+/* No content found messages */
+.content-area p {
+    color: #c0c0c0;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.1em;
+}
+
+/* --- General Button Styles (for btn-primary) --- */
+.btn-primary {
+    padding: 14px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #104e8b 0%, #00ffff 100%);
+    /* Deep Blue to Bright Cyan */
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 8px 25px rgba(16, 78, 139, 0.4);
+    /* Shadow based on the darker blue */
+    text-align: center; /* Ensure text is centered for this general button */
+    display: inline-block; /* Allows margin-top to work and fits content */
+}
+
+.btn-primary:hover {
+    transform: translateY(-5px) scale(1.02);
+    background: linear-gradient(90deg, #00ffff 0%, #104e8b 100%);
+    /* Inverted gradient on hover */
+    box-shadow: 0 12px 35px rgba(16, 78, 139, 0.6);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 15px rgba(16, 78, 139, 0.3);
+}
+
+/* --- Utility Classes --- */
+.mt-3 {
+    margin-top: 1.5rem; /* Equivalent to Bootstrap's mt-3, adjust as needed */
+}
+
+
+/* Responsive Adjustments (Matching register.css structure) */
+@media (max-width: 992px) {
+    .dashboard-wrapper {
+        flex-direction: column;
+        /* Stack sidebar and main content */
+        padding: 20px;
+        /* Add padding to wrapper */
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        flex-direction: row;
+        /* Buttons in a row */
+        justify-content: center;
+        gap: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        /* Adjust shadow for horizontal sidebar */
+    }
+
+    .sidebar h3 {
+        display: none;
+        /* Hide menu title on smaller screens */
+    }
+
+    .sidebar button {
+        width: auto;
+        /* Auto width for buttons in a row */
+        padding: 12px 18px;
+        margin-bottom: 0;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        /* Stack welcome message and profile */
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .top-bar .welcome-message {
+        font-size: 1.8em;
+    }
+
+    .profile-dropdown {
+        align-self: flex-end;
+        /* Push profile to the right */
+    }
+
+    .content-area {
+        padding: 35px;
+        border-radius: 15px;
+    }
+
+    .content-area h2 {
+        font-size: 2.2em;
+        margin-bottom: 25px;
+    }
+
+    .content-area h3 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .courses-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card {
+        padding: 20px;
+    }
+
+    .course-card h4 {
+        font-size: 1.4em;
+    }
+
+    .test-item {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-wrapper {
+        padding: 15px;
+        /* Adjust padding for smaller screens */
+    }
+
+    .sidebar {
+        padding: 15px;
+        flex-wrap: wrap;
+        /* Allow buttons to wrap */
+        justify-content: space-around;
+        /* Distribute buttons evenly */
+    }
+
+    .sidebar button {
+        font-size: 1em;
+        padding: 10px 15px;
+        margin-right: 5px;
+        /* Small margin between buttons */
+        margin-left: 5px;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    .top-bar {
+        margin-bottom: 20px;
+    }
+
+    .top-bar .welcome-message {
+        font-size: 1.6em;
+    }
+
+    .profile-img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .dropdown {
+        min-width: 160px;
+    }
+
+    .dropdown p {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+
+    .content-area {
+        padding: 25px;
+        border-radius: 15px;
+    }
+
+    .content-area h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+
+    .content-area h3 {
+        font-size: 1.6em;
+        margin-bottom: 15px;
+    }
+
+    .courses-container {
+        grid-template-columns: 1fr;
+        /* Single column layout for courses */
+        gap: 15px;
+    }
+
+    .course-card {
+        padding: 18px;
+    }
+
+    .course-card h4 {
+        font-size: 1.3em;
+    }
+
+    .test-item {
+        flex-direction: column;
+        /* Stack test name and button */
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+
+    .test-item button {
+        width: 100%;
+        /* Full width button */
+        text-align: center;
+        padding: 10px;
+        font-size: 0.9em;
+    }
+
+    /* Responsive table for results - "Cards" on small screens */
+    .results-table {
+        display: block;
+        overflow-x: auto;
+        /* Enable horizontal scrolling for table */
+        white-space: nowrap;
+        /* Prevent content from wrapping in cells */
+        border-radius: 10px;
+        /* Keep rounded corners */
+        background: rgba(0, 0, 0, 0.15);
+        /* Keep transparent background */
+    }
+
+    .results-table thead,
+    .results-table tbody,
+    .results-table th,
+    .results-table td,
+    .results-table tr {
+        display: block;
+    }
+
+    .results-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .results-table tr {
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        /* Transparent border */
+        border-radius: 8px;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.08);
+        /* Transparent background for rows */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .results-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        /* Space for the label */
+        text-align: right;
+        white-space: normal;
+        /* Allow text to wrap within the cell */
+        color: #e0e0e0;
+        /* Light text color */
+    }
+
+    .results-table td::before {
+        content: attr(data-label);
+        /* Use data-label for pseudo-elements */
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #b0b0b0;
+        /* Lighter label color */
+    }
+
+    .results-table td button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .sidebar button {
+        margin-right: 5px;
+        font-size: 0.85em;
+        padding: 8px 12px;
+    }
+
+    .content-area h2 {
+        font-size: 1.5em;
+    }
+
+    .content-area h3 {
+        font-size: 1.4em;
+    }
+
+    .test-item button {
+        padding: 8px;
+        font-size: 0.8em;
+    }
+
+    .results-table td {
+        padding-left: 45%;
+    }
+
+    .results-table td::before {
+        width: 40%;
+    }
+}
+
+/* Change Password Section - Glassmorphism Consistent with Dashboard */
+
 .change-password-container {
-  width: 150%;
-  margin: 30px auto;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-left: -40%;
+    max-width: 500px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: #fff;
+    z-index: 1;
 }
 
 .change-password-container h2 {
-  color: #2c3e50;
-  text-align: center;
-  margin-bottom: 25px;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.change-password-container input[type="password"] {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 1em;
+.change-password-container input {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    outline: none;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+    transition: background 0.3s ease;
+}
+
+.change-password-container input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.change-password-container input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
 .change-password-container button {
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  padding: 12px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
+    padding: 14px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #104e8b 0%, #00ffff 100%);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.4s ease;
+    box-shadow: 0 8px 20px rgba(0, 255, 255, 0.3);
 }
 
 .change-password-container button:hover {
-  background-color: #2980b9;
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #00ffff 0%, #104e8b 100%);
 }
 
 .change-password-container p {
-  color: #e74c3c;
-  text-align: center;
-  margin-top: 15px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.95em;
+    color: #f8f8f8;
 }
 
-/* MyProfile.css (You can keep it separate or merge with Dashboard.css) */
-.profile-container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 40px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+/* --- My Profile Section (New styles, consistent with Change Password) --- */
+.profile-content-card {
+    max-width: 600px; /* Adjust width as needed for profile content */
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    gap: 15px; /* Spacing between elements */
+    color: #fff;
+    z-index: 1;
+    animation: fadeIn 0.8s ease-out forwards; /* Reuse fade-in animation */
 }
 
-.profile-container h2 {
-  color: #2c3e50;
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2.2em;
+.profile-content-card h2 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.4); /* Cyan highlight */
+    padding-bottom: 10px;
+    width: 100%; /* Ensure border spans full width */
 }
 
-.profile-img {
-  display: block;
-  margin: 0 auto 25px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  border: 4px solid #f3f6f9;
+.profile-img-display {
+    width: 180px; /* Larger image for profile */
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(0, 255, 255, 0.7); /* More prominent cyan border */
+    box-shadow: 0 0 25px rgba(0, 204, 204, 0.7), inset 0 0 15px rgba(0, 204, 204, 0.5); /* Stronger glow and inner shadow */
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.profile-container p {
-  margin-bottom: 20px;
-  line-height: 1.7;
-  font-size: 1.1em;
+.profile-img-display:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(0, 204, 204, 0.9), inset 0 0 20px rgba(0, 204, 204, 0.6);
 }
 
-.profile-container strong {
-  font-weight: 600;
-  color: #007bff;
-  margin-right: 10px;
+.profile-content-card p {
+    font-size: 1.1em;
+    color: #e0e0e0;
+    text-align: center; /* Center text */
+    margin: 5px 0;
+    width: 100%; /* Ensure paragraph spans full width */
 }
 
-.courses-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+.profile-content-card p strong {
+    color: #fff; /* Make labels stand out */
+    font-weight: 600;
+    margin-right: 10px; /* Space between label and value */
 }
 
-.course-card {
-  background: #f7f7f7;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
+.loading-message {
+    text-align: center;
+    color: #fff;
+    font-size: 1.2em;
+    margin-top: 50px;
 }
 
-.test-item {
-  display: flex;
-  justify-content: space-between;
-  margin: 8px 0;
-}
-
-.test-item button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.test-item button:hover {
-  background-color: #0056b3;
-}
+/* --- End My Profile Section --- */

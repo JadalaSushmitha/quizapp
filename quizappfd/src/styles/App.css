@@ -1,9 +1,22 @@
+/* quizappfd/App.css */
+
+/* IMPORTANT: Modify the #root selector */
 #root {
+  /* max-width and padding from Vite's default setup: */
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+
+  /* ADDED for proper page height management */
+  min-height: 100vh; /* Ensures the root container takes full viewport height */
+  display: flex; /* Use flexbox for vertical layout */
+  flex-direction: column; /* Stacks children vertically */
+  /* Remove text-align: center if you want more control over child component alignment */
+  text-align: initial; /* Reset text-align to default, let components center themselves */
 }
+
+/* Keep the rest of your App.css as is, as it contains specific styles for logos, cards, etc. */
 
 .logo {
   height: 6em;

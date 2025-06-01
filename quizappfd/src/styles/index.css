@@ -1,11 +1,15 @@
+/* quizappfd/index.css */
 :root {
+  /* These are the default CSS variables for font, line height, etc. */
+  /* Keep these as they set up a baseline for your whole app. */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Remove specific background-color and color from :root here, as pages will control it */
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,28 +17,31 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Base styles for anchors (links) */
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #646cff; /* Default link color */
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #535bf2; /* Default link hover color */
 }
 
+/* IMPORTANT: Modify the body selector */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* REMOVE 'display: flex;', 'place-items: center;', 'min-width: 320px;' from here */
+  /* These were forcing centering and minimum width globally. */
+  /* min-height: 100vh; is often left here, but we will put it on #root for better control. */
 }
 
+/* Base styles for headings */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* Base styles for buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,7 +49,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #1a1a1a; /* Default button background */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -54,10 +61,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Media query for light color scheme */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #213547; /* Default text color in light mode */
+    background-color: #ffffff; /* Default background in light mode */
   }
   a:hover {
     color: #747bff;

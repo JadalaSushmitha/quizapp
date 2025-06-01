@@ -1,85 +1,426 @@
-.register-container {
-  max-width: 600px;
-  margin: 0 auto;
+/* Register.css - Updated button colors for better visual harmony */
+
+.register-page-wrapper {
+  display: flex;
+  justify-content: flex-end; /* Pushes content to the right */
+  align-items: center; /* Vertically centers the form */
+  min-height: 100vh; /* Ensure it takes full viewport height */
+
+  /* --- Background Image Adjustments --- */
+  background-image: url('../assets/register.jpg'); /* Make sure this path is correct */
+  background-size: cover; /* Cover the entire area */
+  background-position: left center; /* Focus on the left part of the banner */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* THIS IS THE KEY CHANGE FOR SCROLLING */
+  /* ---------------------------------- */
+
+  font-family: 'Open Sans', sans-serif;
   padding: 30px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden; /* Hide any overflow from effects */
+}
+
+/*
+  Subtle background overlay and animation for visual depth.
+*/
+.register-page-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Using a subtle radial gradient to subtly enhance the light source effect
+     from the left side of the image, while also providing a darker overlay. */
+  background: radial-gradient(circle at 10% center, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+  backdrop-filter: brightness(0.8) contrast(1.1); /* Slightly adjust background image appearance */
+  pointer-events: none;
+  z-index: 0;
+  animation: bgFadeIn 1.5s ease-out forwards; /* 'forwards' keeps the final state */
+}
+
+@keyframes bgFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/*
+  Decorative elements for extra visual flair.
+  Adjusted position to be on the right side of the form.
+*/
+.register-page-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -5%; /* Adjusted position */
+  right: 5%; /* Adjusted position */
+  width: 200px; /* Slightly smaller blob */
+  height: 200px;
+  /* Retained a subtle blue-green glow that fits the background's light accents */
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0) 70%); /* Cyan glow */
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: moveBlob2 20s infinite ease-in-out alternate-reverse; /* Different animation for variety */
+  z-index: 0;
+}
+
+@keyframes moveBlob2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, -50px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+
+/*
+  Main registration form container.
+  This is the glassmorphism box positioned to the right.
+*/
+.register-container {
+  background: rgba(255, 255, 255, 0.08); /* Slightly more transparent white for glass effect */
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5); /* Strong, diffused shadow */
+  backdrop-filter: blur(25px) saturate(180%); /* Increased blur and saturation for more pronounced glass */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Slightly more prominent border */
+  width: 100%;
+  max-width: 500px; /* Optimized max-width for the form content */
+  box-sizing: border-box;
+  text-align: center;
+  z-index: 1; /* Ensure it's above background elements */
+  animation: slideInRight 0.8s ease-out forwards; /* 'forwards' keeps the final state */
+  margin-left: auto; /* Pushes the container to the right in flex-end scenario */
+  margin-right: 5%; /* Add some margin from the right edge of the viewport */
+  position: relative; /* For z-index stacking context if needed */
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px) scale(0.95); /* Start further right */
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 
 .register-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px;
+  color: #fff;
+  margin-bottom: 35px;
+  font-size: 2.8em;
+  font-weight: 700;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.8px;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
 .input-group {
-  margin-bottom: 15px;
+  text-align: left;
+  position: relative; /* Needed for potential future icons if desired */
 }
 
-.input-group input {
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ced4da;
-  font-size: 1rem;
-  width: 100%;
-}
-
-.file-input-group {
-  margin-bottom: 15px;
-}
-
-.file-input-group label {
+.input-group label {
+  color: #e0e0e0;
+  font-size: 1.05em;
+  margin-bottom: 8px;
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 500;
 }
 
-.file-input-group input {
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="tel"] { /* Removed file input from this group */
   width: 100%;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ced4da;
-  font-size: 1rem;
-}
-
-.file-input-group img {
-  margin-top: 10px;
-}
-
-.submit-btn {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  font-size: 1.1rem;
+  padding: 14px 18px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+  color: #b0b0b0;
+  font-weight: 300;
+}
+
+.input-group input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.25);
+  /* Keeping the vibrant blue-green glow as it contrasts well and fits the background's light */
+  box-shadow: 0 0 0 3px rgba(0, 204, 204, 0.6), inset 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* File input specific styling */
+.input-group input[type="file"] {
+  width: 100%; /* Ensure full width */
+  padding: 12px 15px; /* Minimal padding for the actual input field itself */
   cursor: pointer;
-  transition: background-color 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px; /* Added border radius for consistency */
+  box-sizing: border-box;
+  color: transparent; /* Hide default text */
+  position: relative; /* For pseudo-elements */
+  z-index: 0; /* Ensure pseudo-elements are above */
 }
 
-.submit-btn:hover {
-  background-color: #0056b3;
+.input-group input[type="file"]::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.input-group input[type="file"]::before {
+  content: 'Choose File';
+  display: inline-block;
+  /* "Choose File" button gradient: Deep blue to bright cyan */
+  background: linear-gradient(90deg, #104E8B 0%, #00FFFF 100%); /* A darker blue to bright cyan */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  /* Positions the custom button inside the input field */
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 15px; /* Adjust text padding */
+  padding-right: 25px; /* More padding for a button-like feel */
+  box-sizing: border-box;
+  z-index: 1; /* Make sure it's above the input */
+}
+.input-group input[type="file"]::-ms-browse {
+  visibility: hidden; /* For IE */
+}
+/* This is the pseudo-element to display the file name */
+.input-group input[type="file"]::after {
+  content: attr(data-file-name); /* Dynamically show file name from data-file-name attribute */
+  display: inline-block;
+  position: absolute;
+  left: 135px; /* Adjust based on button width and desired spacing */
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c0c0c0;
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  z-index: 0;
 }
 
-.submit-btn:disabled {
-  background-color: #cce5ff;
+
+.input-group input[type="file"]:hover::before {
+  /* Hover state for "Choose File" button */
+  background: linear-gradient(90deg, #00FFFF 0%, #104E8B 100%); /* Inverted for hover */
+}
+.input-group input[type="file"]:active::before {
+  /* Active state for "Choose File" button */
+  background: linear-gradient(90deg, #00CED1 0%, #00BFFF 100%); /* Darker cyan/blue on active */
+  transform: translateY(1px);
+}
+
+.input-group img {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.input-group img:hover {
+  transform: scale(1.03);
+}
+
+
+/* Register button */
+.register-container button[type="submit"] {
+  width: 100%;
+  padding: 18px 25px;
+  /* NOW SAME GRADIENT AS "Choose File" button */
+  background: linear-gradient(90deg, #104E8B 0%, #00FFFF 100%); /* Deep Blue to Bright Cyan */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Adjusted shadow color to match button */
+  box-shadow: 0 8px 25px rgba(16, 78, 139, 0.4); /* Shadow based on the darker blue */
+  margin-top: 25px;
+  letter-spacing: 0.8px;
+}
+
+.register-container button[type="submit"]:hover {
+  transform: translateY(-5px) scale(1.02);
+  /* Adjusted shadow color on hover */
+  box-shadow: 0 12px 35px rgba(16, 78, 139, 0.6);
+  /* Inverted gradient on hover */
+  background: linear-gradient(90deg, #00FFFF 0%, #104E8B 100%);
+}
+
+.register-container button[type="submit"]:disabled {
+  /* Disabled state matching the chosen gradient */
+  background: linear-gradient(90deg, #336699 0%, #00B3B3 100%); /* Muted versions of the chosen colors */
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.success-message {
-  color: green;
-  text-align: center;
-  font-size: 1rem;
+/* Message styling (success/error) */
+.register-container .success-msg,
+.register-container .error-msg {
+  margin-top: 20px;
+  font-size: 0.95em;
+  padding: 10px 15px;
+  border-radius: 8px;
+  animation: slideInFromBottom 0.6s ease-out forwards;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 1rem;
+@keyframes slideInFromBottom {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.register-container .success-msg {
+  color: #90EE90;
+  background-color: rgba(4, 114, 78, 0.4);
+  border: 1px solid rgba(4, 114, 78, 0.6);
+}
+
+.register-container .error-msg {
+  color: #FFB6C1;
+  background-color: rgba(185, 28, 28, 0.4);
+  border: 1px solid rgba(185, 28, 28, 0.6);
+}
+
+/* Login redirect link */
+.login-redirect {
+  margin-top: 30px;
+  font-size: 1em;
+  color: #e0e0e0;
+}
+
+.login-redirect a {
+  /* Keeping the vibrant blue for the link, as it stands out well */
+  color: #00BFFF;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.login-redirect a:hover {
+  text-decoration: underline;
+  color: #008DDA;
+}
+
+/*
+  Responsive adjustments.
+*/
+@media (max-width: 992px) {
+  .register-page-wrapper {
+    justify-content: center; /* Center the form on smaller screens */
+    padding: 20px;
+  }
+
+  .register-container {
+    max-width: 600px; /* Allow form to be wider when centered */
+    padding: 35px;
+    margin-right: auto; /* Reset right margin when centered */
+  }
+
+  .register-title {
+    font-size: 2.4em;
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .register-page-wrapper {
+    padding: 15px;
+  }
+
+  .register-container {
+    padding: 25px;
+    border-radius: 15px;
+  }
+
+  .register-title {
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
+
+  .register-form {
+    gap: 15px;
+  }
+
+  .input-group label {
+    font-size: 0.95em;
+  }
+
+  .input-group input {
+    padding: 12px 15px;
+    font-size: 0.9em;
+  }
+
+  /* Adjust file input button position on small screens */
+  .input-group input[type="file"]::before {
+    padding: 6px 12px;
+    font-size: 0.8em;
+    left: 0; /* Align button to left edge */
+    top: 0;
+    height: 100%;
+    transform: none; /* Remove transform if applied */
+  }
+
+  .input-group input[type="file"]::after {
+    left: 110px; /* Adjust position for file name */
+    font-size: 0.8em;
+  }
+
+  .input-group img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+
+  .register-container button[type="submit"] {
+    padding: 14px 20px;
+    font-size: 1.1em;
+  }
+
+  .login-redirect {
+    font-size: 0.9em;
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 400px) {
+  .register-container {
+    padding: 20px;
+  }
+
+  .register-title {
+    font-size: 1.7em;
+  }
 }
