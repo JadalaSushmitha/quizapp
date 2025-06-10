@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
 
         <div className="contact-info">
           <p>
-            For any questions, contact us at <a href="mailto:support@onlinetestportal.com">support@onlinetestportal.com</a>
+            For any questions, contact us at <a href="mailto:support@ndmatrix.com">support@ndmatrix.com</a>
           </p>
         </div>
       </div>

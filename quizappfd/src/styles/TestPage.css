@@ -1,90 +1,230 @@
-/* quizappfd/src/styles/TestPage.css */
-
+/* General Test Page Layout */
 .test-page-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f0f2f5; /* Light background */
-  font-family: "Segoe UI", Arial, sans-serif;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
   color: #333;
 }
 
+/* Header Styles */
 .test-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  background-color: #d8eef0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative; /* Needed for absolute positioning of progress bar */
+  z-index: 10; /* Ensure header is above other content */
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .test-title {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: #2c3e50;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #0056b3;
+}
+
+.test-welcome-message {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Adjust gap to make space for calculator button */
 }
 
 .test-timer {
-  font-size: 1.4em;
-  font-weight: 700;
-  color: #e74c3c; /* Red for urgency */
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #d9534f; /* Red for timer */
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.test-timer span {
-  background-color: #fbe6e6;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.test-timer span.time-critical {
-    color: #c0392b; /* Even darker red for very low time */
-    animation: pulse 1s infinite alternate; /* Optional: add a pulse effect */
+.test-timer .time-critical {
+  color: #ff0000;
+  animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(1.05); opacity: 0.8; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-
-.test-main-content {
-  flex-grow: 1;
+/* User Profile Widget */
+.user-profile-widget {
+  position: relative;
   display: flex;
-  padding: 20px;
-  gap: 20px; /* Space between question panel and palette */
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 25px;
+  background-color: #e0e0e0;
+  transition: background-color 0.3s ease;
 }
 
-/* --- Question Panel --- */
-.question-panel {
-  flex-grow: 1;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  padding: 30px;
+.user-profile-widget:hover {
+  background-color: #d0d0d0;
+}
+
+.user-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
+}
+
+.user-profile-name {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Profile Popup Styles */
+.profile-popup {
+  position: absolute;
+  top: 100%; /* Position below the widget */
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  min-width: 220px;
+  z-index: 100; /* Ensure it's on top of everything */
   display: flex;
   flex-direction: column;
-  transition: flex-grow 0.3s ease-in-out; /* Smooth transition for expansion */
+  align-items: center;
+  gap: 10px;
+  transform: translateY(10px); /* Slightly offset for a smoother appearance */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show popup on hover/click */
+.user-profile-widget:hover .profile-popup,
+.user-profile-widget.show-popup .profile-popup { /* Add a class for click toggle if needed */
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile-popup-pic {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #007bff;
+  margin-bottom: 10px;
+}
+
+.profile-popup p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+  text-align: center;
+}
+
+.profile-popup strong {
+  color: #000;
+}
+
+
+/* Progress Bar */
+.progress-bar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: #e9ecef;
+  border-radius: 0 0 8px 8px; /* Rounded corners at the bottom */
+  overflow: hidden; /* Ensures progress bar stays within container */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #28a745; /* Green color for progress */
+  transition: width 0.3s ease-in-out;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Main Content Area */
+.test-main-content {
+  display: flex;
+  flex: 1; /* Allows content to take remaining height */
+  padding: 20px;
+  gap: 20px;
+  overflow: hidden; /* Ensures panels don't overflow */
+}
+
+/* Question Panel */
+.question-panel {
+  flex: 3; /* Takes more space */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enable scrolling for long questions/options */
+  position: relative;
+  transition: flex 0.3s ease-in-out;
 }
 
 .question-panel.expanded {
-  flex-grow: 3; /* Take more space when palette is collapsed */
+  flex: 1; /* Takes less space when palette is collapsed */
 }
 
-.question-header {
-  font-size: 1.8em;
-  font-weight: 600;
-  color: #2563eb; /* Blue accent */
-  margin-bottom: 25px;
-  padding-bottom: 15px;
+
+.question-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #eee;
 }
 
-.question-text {
+.question-number {
   font-size: 1.2em;
-  line-height: 1.7;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.question-type-display, .question-marks-display {
+  font-size: 0.95em;
+  color: #555;
+}
+
+.question-text {
+  font-size: 1.15em;
+  line-height: 1.6;
   margin-bottom: 30px;
-  color: #444;
+  white-space: pre-wrap; /* Preserves whitespace and line breaks */
 }
 
 .options-container {
@@ -96,81 +236,76 @@
 
 .option-label {
   display: flex;
-  align-items: center;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px 20px;
+  align-items: flex-start;
+  font-size: 1em;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  background-color: #f9f9f9;
 }
 
 .option-label:hover {
-  background-color: #eef7ff;
-  border-color: #2563eb;
+  background-color: #eaf6ff;
+  border-color: #007bff;
 }
 
-.option-label input[type="radio"] {
+.option-label input[type="radio"],
+.option-label input[type="checkbox"] {
   margin-right: 15px;
-  width: 20px;
-  height: 20px;
-  accent-color: #2563eb; /* Blue for selected radio */
+  transform: scale(1.2);
+  cursor: pointer;
+  flex-shrink: 0; /* Prevent checkbox/radio from shrinking */
+  margin-top: 2px; /* Align with text better */
 }
 
-.option-text {
-  font-size: 1.1em;
-  color: #333;
+.option-label input[type="radio"]:checked + .option-text,
+.option-label input[type="checkbox"]:checked + .option-text {
+  font-weight: bold;
+  color: #0056b3;
 }
 
 .nat-input-container {
-  margin-top: 20px;
-  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 15px;
-}
-
-.nat-input-container label {
-  font-size: 1.1em;
-  font-weight: 500;
-  color: #555;
+  margin-bottom: 30px;
+  align-items: flex-start;
 }
 
 .nat-input {
-  width: 100%;
-  max-width: 300px;
-  padding: 12px 15px;
-  font-size: 1.3em;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  text-align: center;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fcfcfc;
-}
-
-.nat-input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-  outline: none;
+  padding: 10px 15px;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%; /* Full width within its container */
+  max-width: 300px; /* Limit input width */
+  text-align: right;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 .question-navigation-buttons {
   display: flex;
-  justify-content: space-between; /* Distribute buttons */
-  margin-top: auto; /* Push buttons to the bottom */
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  gap: 15px;
+  margin-top: auto; /* Pushes buttons to the bottom */
   padding-top: 20px;
   border-top: 1px solid #eee;
+  justify-content: flex-end; /* Align buttons to the right */
 }
 
 .nav-button {
   padding: 12px 25px;
   border: none;
-  border-radius: 8px;
-  font-size: 1.05em;
-  font-weight: 600;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  flex-grow: 1; /* Allow buttons to grow and fill space */
+  min-width: 120px; /* Ensure minimum width */
 }
 
 .nav-button:disabled {
@@ -181,227 +316,260 @@
 
 .nav-button.prev {
   background-color: #6c757d;
-  color: #fff;
+  color: white;
 }
+
 .nav-button.prev:hover:not(:disabled) {
   background-color: #5a6268;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .nav-button.clear {
-  background-color: #ffc107;
-  color: #333;
+  background-color: #dc3545;
+  color: white;
 }
+
 .nav-button.clear:hover:not(:disabled) {
-  background-color: #e0a800;
-  transform: translateY(-1px);
+  background-color: #c82333;
+  transform: translateY(-2px);
 }
 
 .nav-button.mark-review {
-  background-color: #007bff; /* Blue for mark review */
-  color: #fff;
+  background-color: #ffc107;
+  color: #333;
 }
+
 .nav-button.mark-review:hover:not(:disabled) {
-  background-color: #0056b3;
-  transform: translateY(-1px);
+  background-color: #e0a800;
+  transform: translateY(-2px);
 }
 
 .nav-button.save-next {
-  background-color: #28a745; /* Green for save next */
-  color: #fff;
-}
-.nav-button.save-next:hover:not(:disabled) {
-  background-color: #218838;
-  transform: translateY(-1px);
+  background-color: #007bff;
+  color: white;
 }
 
-/* --- Question Palette Panel --- */
+.nav-button.save-next:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+
+/* Question Palette Panel */
 .question-palette-panel {
-  width: 300px;
-  flex-shrink: 0; /* Prevent it from shrinking */
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  flex: 1; /* Takes less space */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  position: relative; /* For the toggle button */
-  transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  min-width: 250px; /* Minimum width for palette */
+  max-width: 350px; /* Maximum width for palette */
 }
 
 .question-palette-panel.collapsed {
-  width: 50px; /* Collapse width */
-  padding: 20px 5px; /* Adjust padding when collapsed */
-  overflow: hidden; /* Hide content */
+  flex: 0 0 50px; /* Collapses to a fixed smaller width */
+  overflow: hidden;
+  padding: 0;
 }
 
 .palette-toggle-button {
   position: absolute;
-  left: -20px; /* Position to the left edge of the palette */
+  left: -20px; /* Position outside the panel */
   top: 50%;
   transform: translateY(-50%);
-  background-color: #2563eb;
-  color: #fff;
+  background-color: #007bff;
+  color: white;
   border: none;
-  border-radius: 0 5px 5px 0; /* Rounded on the right side */
-  padding: 10px 5px;
-  cursor: pointer;
-  font-size: 1.5em;
-  line-height: 1;
-  transition: background-color 0.2s ease;
-  z-index: 11; /* Ensure it's above other elements */
-}
-
-.palette-toggle-button:hover {
-  background-color: #1a4dbe;
-}
-
-
-.palette-header {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.question-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-  gap: 10px;
-  margin-bottom: 25px;
-  max-height: 400px; /* Limit height for scrollable questions */
-  overflow-y: auto; /* Make question grid scrollable */
-  padding-right: 5px; /* Prevent scrollbar from overlapping last column */
-}
-
-.question-number-box {
+  border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%; /* Circle shape */
-  font-weight: 600;
+  font-size: 1.5em;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 20; /* Ensure button is clickable */
+}
+
+.question-palette-panel.collapsed .palette-toggle-button {
+  left: 5px; /* Adjust position when collapsed */
+}
+
+
+.palette-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #0056b3;
+  margin-bottom: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Scrollable container for the question grid */
+.question-grid-container {
+  flex-grow: 1; /* Allows grid to take available space */
+  overflow-y: auto; /* Adds scrollbar if content overflows */
+  width: 100%;
+  padding-right: 5px; /* Space for scrollbar */
+}
+
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+  gap: 10px;
+  padding: 5px;
+}
+
+.question-number-box {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid #ccc;
-  color: #333;
+  flex-shrink: 0; /* Prevent boxes from shrinking */
 }
 
 .question-number-box:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .question-number-box.active {
-  border: 2px solid #2563eb; /* Active question has a prominent border */
-  box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
-  transform: scale(1.08);
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.7);
 }
 
-/* Question Status Colors (matching GATE-like instructions) */
+/* Question Status Colors */
 .question-number-box.not-visited {
-  background-color: #a0a0a0; /* Grey */
-  color: #fff;
+  background-color: #f0f0f0;
+  color: #555;
 }
+
 .question-number-box.not-answered {
-  background-color: #ff0000; /* Red */
-  color: #fff;
+  background-color: #ffcccb; /* Light red */
+  color: #d9534f;
+  border-color: #d9534f;
 }
+
 .question-number-box.answered {
-  background-color: #008000; /* Green */
-  color: #fff;
+  background-color: #d4edda; /* Light green */
+  color: #28a745;
+  border-color: #28a745;
 }
+
 .question-number-box.marked-for-review {
-  background-color: #ffa500; /* Orange */
-  color: #fff;
+  background-color: #fff3cd; /* Light yellow/orange */
+  color: #ffc107;
+  border-color: #ffc107;
 }
+
 .question-number-box.answered-and-marked-for-review {
-  background-color: #800080; /* Purple */
-  color: #fff;
+  background-color: #add8e6; /* Light blue, distinct from active */
+  color: #17a2b8;
+  border-color: #17a2b8;
+  position: relative;
 }
+/* Optional: Add a small icon or indicator for answered-and-marked */
+.question-number-box.answered-and-marked-for-review::after {
+    content: "✓"; /* Checkmark */
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 0.7em;
+    color: #28a745; /* Green check */
+}
+
 
 .palette-legend {
   margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
+  width: 100%;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #eee;
 }
 
 .palette-legend p {
-  font-weight: 600;
+  font-weight: bold;
   margin-bottom: 10px;
+  color: #333;
+  text-align: center;
 }
 
 .legend-row {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
-}
-
-.q-status-box {
-  /* Re-use from InstructionPopup.css for consistency */
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
-  vertical-align: middle;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  flex-shrink: 0; /* Prevent box from shrinking */
-}
-
-/* Specific colors for legend boxes (ensure these match the status colors above) */
-.legend-row .q-status-not-visited { background-color: #a0a0a0; }
-.legend-row .q-status-not-answered { background-color: #ff0000; }
-.legend-row .q-status-answered { background-color: #008000; }
-.legend-row .q-status-marked-for-review { background-color: #ffa500; }
-.legend-row .q-status-answered-and-marked-for-review { background-color: #800080; }
-
-
-.legend-text {
-  font-size: 0.95em;
+  font-size: 0.9em;
   color: #555;
 }
 
+.q-status-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Re-use status colors for legend boxes */
+.q-status-not-visited { background-color: #f0f0f0; }
+.q-status-not-answered { background-color: #ffcccb; border-color: #d9534f;}
+.q-status-answered { background-color: #d4edda; border-color: #28a745;}
+.q-status-marked-for-review { background-color: #fff3cd; border-color: #ffc107;}
+.q-status-answered-and-marked-for-review { background-color: #add8e6; border-color: #17a2b8;}
+
+
 .submit-test-button {
-  display: block;
-  width: 90%;
-  margin: 30px auto 0;
-  padding: 15px 0;
-  background-color: #007bff; /* Blue for submit */
-  color: #fff;
+  margin-top: 20px;
+  padding: 15px 30px;
+  background-color: #28a745;
+  color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.15em;
-  font-weight: 600;
+  font-size: 1.1em;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 100%; /* Make button full width */
 }
 
 .submit-test-button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
   transform: translateY(-2px);
 }
 
-/* Loading state */
+/* Loading Spinner */
 .test-loading {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
   font-size: 1.5em;
-  color: #555;
+  color: #007bff;
 }
 
 .spinner {
-  border: 8px solid #f3f3f3; /* Light grey */
-  border-top: 8px solid #3498db; /* Blue */
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  animation: spin 2s linear infinite;
+  animation: spin 1s linear infinite;
   margin-top: 20px;
 }
 
@@ -410,140 +578,130 @@
   100% { transform: rotate(360deg); }
 }
 
+/* NEW: Calculator Toggle Button */
+.calculator-toggle-button {
+  position: relative; /* Changed from absolute to relative to flow with header items */
+  padding: 8px 12px;
+  background-color: #f2f2f2; /* Light background */
+  color: #333; /* Dark text */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-left: 20px; /* Add some margin to separate it from the profile widget */
+  z-index: 99; /* Ensure it's above other header elements if needed */
+}
 
-/* SweetAlert Custom Styles (optional, but good for consistent look) */
-.my-swal-container {
-  font-family: "Segoe UI", Arial, sans-serif;
-  z-index: 10000 !important; /* Ensure it's on top of everything */
+.calculator-toggle-button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.calculator-toggle-button:active {
+  background-color: #d0d0d0;
+  transform: translateY(0);
+}
+
+
+/* NEW: Wrapper for the Calculator component */
+.calculator-container-wrapper {
+  position: fixed; /* Fixed position relative to the viewport */
+  bottom: 20px; /* Dock it to the bottom */
+  right: 20px; /* Dock it to the right */
+  transform: none; /* Remove previous transform to center */
+  z-index: 1000; /* Ensure it's on top of all other content */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  border-radius: 8px; /* Match other UI elements for consistency */
+  overflow: hidden; /* Ensure content stays within rounded corners */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition for show/hide */
+}
+
+/* Class to apply when calculator is hidden */
+.calculator-container-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none; /* Disable interaction when hidden */
+    transform: translateY(20px); /* Slide down slightly when hiding */
 }
 
 
 /* Responsive Adjustments */
-@media (max-width: 1024px) {
-  .test-main-content {
-    flex-direction: column; /* Stack panels on smaller screens */
-  }
-
-  .question-palette-panel {
-    width: 100%;
-    max-width: none;
-    order: -1; /* Place palette above question panel on small screens */
-    margin-bottom: 20px;
-  }
-
-  .question-palette-panel.collapsed {
-    width: 100%; /* Keep full width even when collapsed to show toggle */
-    padding: 10px 20px;
-    height: 50px;
-    overflow: hidden;
-  }
-
-  .question-palette-panel.collapsed .palette-toggle-button {
-    left: auto;
-    right: 20px; /* Move toggle button to right when collapsed */
-    transform: translateY(-50%) rotate(180deg); /* Rotate for collapsed state */
-    border-radius: 5px; /* Adjust border radius */
-  }
-
-  .question-palette-panel:not(.collapsed) .palette-toggle-button {
-    left: auto;
-    right: 20px;
-    transform: translateY(-50%);
-    border-radius: 5px;
-  }
-}
-
 @media (max-width: 768px) {
   .test-header {
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 20px;
+    gap: 10px;
   }
 
-  .test-title {
-    font-size: 1.3em;
-    margin-bottom: 5px;
-  }
-
-  .test-timer {
-    font-size: 1.2em;
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .test-main-content {
+    flex-direction: column;
     padding: 15px;
-    gap: 15px;
   }
 
   .question-panel, .question-palette-panel {
-    padding: 20px;
+    width: 100%;
+    flex: none; /* Remove flex-grow on small screens */
+    min-width: unset;
+    max-width: unset;
   }
 
-  .question-header {
-    font-size: 1.5em;
-    margin-bottom: 20px;
+  .question-palette-panel.collapsed {
+    flex: none;
+    width: 100%; /* Take full width when collapsed too */
+    padding: 0;
   }
 
-  .question-text {
-    font-size: 1.1em;
-    margin-bottom: 20px;
-  }
-
-  .option-label {
-    padding: 12px 15px;
-  }
-
-  .option-label input[type="radio"] {
-    width: 18px;
-    height: 18px;
-  }
-
-  .option-text {
-    font-size: 1em;
-  }
-
-  .nat-input {
-    font-size: 1.1em;
-    padding: 10px 12px;
+  .palette-toggle-button {
+    position: static; /* Reset position */
+    transform: none;
+    margin: 10px auto; /* Center the toggle button */
   }
 
   .question-navigation-buttons {
-    flex-wrap: wrap; /* Allow buttons to wrap */
-    justify-content: center;
-    gap: 10px; /* Space between wrapped buttons */
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .nav-button {
-    padding: 10px 18px;
-    font-size: 0.9em;
+    width: 100%;
   }
 
-  .question-grid {
-    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
-    gap: 8px;
+  .user-profile-widget {
+    background-color: transparent; /* Make it less prominent on small screens */
+    padding: 0;
   }
 
-  .question-number-box {
-    width: 35px;
-    height: 35px;
-    font-size: 0.9em;
+  .profile-popup {
+    position: fixed; /* Fix position for mobile */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 300px;
   }
-}
 
-@media (max-width: 480px) {
-  .test-header {
-    padding: 10px 15px;
+  /* NEW: Responsive adjustments for calculator toggle button on small screens */
+  .calculator-toggle-button {
+    position: static; /* Remove absolute positioning */
+    margin-top: 10px; /* Add some space from other header elements */
+    width: 100%; /* Full width for better tap target */
+    right: auto; /* Reset right property */
+    top: auto; /* Reset top property */
+    margin-left: 0; /* Ensure no left margin on small screens */
   }
-  .test-title { font-size: 1.1em; }
-  .test-timer { font-size: 1em; }
-  .test-main-content { padding: 10px; gap: 10px; }
-  .question-panel, .question-palette-panel { padding: 15px; }
-  .question-header { font-size: 1.3em; }
-  .question-text { font-size: 1em; }
-  .option-label { padding: 10px 12px; }
-  .option-label input[type="radio"] { width: 16px; height: 16px; }
-  .option-text { font-size: 0.9em; }
-  .nat-input { font-size: 1em; }
-  .nav-button { padding: 8px 15px; font-size: 0.85em; }
-  .question-grid { gap: 6px; }
-  .question-number-box { width: 30px; height: 30px; font-size: 0.8em; }
+
+  /* NEW: Responsive adjustments for calculator container on small screens */
+  .calculator-container-wrapper {
+    width: 95%; /* Make it take more width on small screens */
+    max-width: 300px; /* Keep it within a reasonable size */
+    bottom: 10px; /* Adjust bottom for mobile */
+    right: 50%; /* Center horizontally */
+    transform: translateX(50%); /* Adjust for centering */
+  }
 }

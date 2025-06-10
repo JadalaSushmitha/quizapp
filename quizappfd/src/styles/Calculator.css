@@ -1,0 +1,71 @@
+/* quizappfd/src/styles/Calculator.css */
+
+.calculator-wrapper {
+  background-color: #333; /* Dark background for the calculator body */
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 280px; /* Slightly wider than numpad */
+  font-family: 'Calculator', monospace; /* Use a monospaced font for display */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between display, operators, and numpad */
+}
+
+.calculator-display {
+  background-color: #222; /* Darker background for display */
+  color: #0f0; /* Green text for a classic calculator look */
+  font-size: 2.8em;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: right;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: auto; /* Allow horizontal scrolling for long numbers */
+  white-space: nowrap; /* Keep content on a single line */
+}
+
+.calculator-operators {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 columns for operators and equals */
+  gap: 8px;
+  margin-bottom: 5px; /* Space between operators and numpad */
+}
+
+.calc-operator-button {
+  background-color: #666; /* Grey for operators */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.calc-operator-button:hover {
+  background-color: #888;
+}
+
+.calc-operator-button:active {
+  background-color: #555;
+  transform: translateY(1px);
+}
+
+.calc-equals-button {
+  background-color: #28a745; /* Green for equals, distinct */
+}
+
+.calc-equals-button:hover {
+  background-color: #218838;
+}
+
+.calc-equals-button:active {
+  background-color: #1e7e34;
+}
+
+/* Ensure numpad container's width fits within calculator wrapper, or adjust numpad width */
+/* .numpad-container styles are already in Numpad.css, make sure they align */

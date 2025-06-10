@@ -204,3 +204,53 @@
 .view-solutions-btn:hover {
   background-color: #1e4db7;
 }
+
+/* --- NEW STYLES FOR OPTIONS IN SOLUTION PAGE --- */
+.options-container.solution-options {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.option-item {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+}
+
+.option-item .option-label {
+    font-weight: bold;
+    margin-right: 8px;
+    min-width: 20px; /* Ensure labels align */
+}
+
+.option-item .option-text {
+    flex-grow: 1;
+}
+
+/* Styling for correct answers */
+.correct-answer-option {
+    background-color: #e6ffe6; /* Light green for correct options */
+    border-color: #4CAF50;
+    font-weight: bold;
+}
+
+/* Styling for user's selected answers (overall) */
+.user-selected {
+    border-width: 2px; /* Thicker border for selected option */
+}
+
+/* Specific styling for user's selected option that is correct */
+.user-selected.correct-answer-option {
+    background-color: #c8e6c9; /* Darker green if user selected correctly */
+    border-color: #388E3C;
+}
+
+/* Specific styling for user's selected option that is incorrect */
+.user-selected.incorrect-answer-option {
+    background-color: #ffe6e6; /* Light red for incorrect selections */
+    border-color: #F44336;
+}

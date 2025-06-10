@@ -9,7 +9,7 @@ function ContactUs() {
       <div className="contact-details">
         <div className="detail-item">
           <i className="fas fa-envelope"></i> {/* icon */}
-          <strong>Email:</strong> <a href="mailto:support@nmatrix.com">support@nmatrix.com</a>
+          <strong>Email:</strong> <a href="mailto:support@ndmatrix.com">support@ndmatrix.com</a>
         </div>
         <div className="detail-item">
           <i className="fas fa-phone"></i> {/*icon */}

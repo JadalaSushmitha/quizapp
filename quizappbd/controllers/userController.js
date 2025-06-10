@@ -124,6 +124,31 @@ const getUserDashboard = async (req, res) => {
   }
 };
 
+// NEW: Get User Profile Details
+const getProfileDetails = async (req, res) => {
+  const userId = req.user.id; // Get user ID from authenticated JWT
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is missing from token" });
+  }
+
+  try {
+    const [user] = await db.promise().query(
+      "SELECT full_name, email, college_id, profile_pic FROM users WHERE id = ?",
+      [userId]
+    );
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(user[0]); // Send back the user's profile data
+  } catch (err) {
+    console.error("Error fetching profile details:", err);
+    res.status(500).json({ error: "Failed to fetch profile details" });
+  }
+};
+
 
 // Change password
 const changePassword = async (req, res) => {
@@ -199,7 +224,7 @@ const getUserResults = async (req, res) => {
 
   try {
     const [results] = await db.promise().query(`
-      SELECT 
+      SELECT
         r.result_id,
         r.test_id,
         t.test_name,
@@ -278,5 +303,6 @@ module.exports = {
   getUserResults,
   getCoursesAndTests,
   sendEmail,
-  updateUserProfile
+  updateUserProfile,
+  getProfileDetails // NEWLY EXPORTED
 };
