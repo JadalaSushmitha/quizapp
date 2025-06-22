@@ -17,6 +17,7 @@ import TestPage from "./pages/TestPage";
 import ResultPage from "./pages/ResultPage";
 import SolutionPage from "./pages/SolutionPage";
 import SuperSecretAdmin from './pages/SuperSecretAdmin';
+import CalculatorPage from './pages/CalculatorPage';
 
 function App() {
   const [user, setUser] = useState(null); // Create user state here
@@ -39,6 +40,7 @@ function App() {
         <Route path="/test/:testId" element={<TestPage />} />
         <Route path="/result/:resultId" element={<ResultPage />} />
         <Route path="/solution/:resultId" element={<SolutionPage />} />
+        <Route path="/calculator" element={<CalculatorPage />} />
         <Route path="/super-access-8934" element={<SuperSecretAdmin />} />
       </Routes>
     </BrowserRouter>

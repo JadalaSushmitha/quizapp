@@ -57,7 +57,7 @@ const InstructionPopup = () => {
               to manually submit.
             </li>
             <li>
-              This test consists of both **Multiple Choice Questions (MCQ)** and
+              This test consists of **Multiple Choice Questions (MCQ)** , **Multiple Select Questions (MSQ)** , and
               **Numerical Answer Type (NAT)** questions.
             </li>
             <li>
@@ -146,6 +146,22 @@ const InstructionPopup = () => {
               To save your answer, you **MUST** click the **"Save & Next"**
               button. If you navigate away without clicking "Save & Next", your
               new selection will not be saved.
+            </li>
+          </ul>
+
+          <h3>Procedure for Multiple Select Questions (MSQ):</h3>
+          <ul className="instruction-list">
+            <li>
+             To select your answer, click on the checkbox next to each desired option. You can select one or more options.
+            </li>
+            <li>
+              To deselect a chosen answer, click on the selected option's checkbox again or use the "Clear Response" button.
+            </li>
+            <li>
+              To change your answer, simply click on the checkbox of the options you wish to select or deselect.
+            </li>
+            <li>
+              To save your answer, you MUST click the "Save & Next" button. If you navigate away without clicking "Save & Next", your new selection(s) will not be saved.
             </li>
           </ul>
 

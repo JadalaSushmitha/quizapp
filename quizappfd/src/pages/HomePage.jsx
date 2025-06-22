@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/homepage.css';
 import heroImage from '../assets/hero-student.jpg';
@@ -7,8 +7,16 @@ import featureIcon2 from '../assets/icon2.png';
 import featureIcon3 from '../assets/icon3.png';
 import featureIcon4 from '../assets/icon4.png';
 import BackToTopButton from './BackToTopButton.jsx';
+import VideoModal from '../components/VideoModal';
 
 const HomePage = () => {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
+  const openVideoModal = (e) => {
+    e.preventDefault();
+    setIsVideoModalOpen(true);
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const backToTopButton = document.getElementById('back-to-top');
@@ -58,7 +66,7 @@ const HomePage = () => {
             <p className="hero-subtitle">Simulate actual GATE exam environment, manage time, and analyze performance with detailed solutions and reports.</p>
             <div className="hero-buttons">
               <Link to="/register" className="btn primary-btn">Start</Link>
-              <Link to="/demo" className="btn outline-btn">Try a Demo</Link>
+              <a href="#" onClick={openVideoModal} className="btn outline-btn">Try a Demo</a>
             </div>
           </div>
           <div className="hero-image">
@@ -114,6 +122,13 @@ const HomePage = () => {
         </div>
         <BackToTopButton scrollToTop={scrollToTop} />
       </footer>
+
+      {/* Video Modal */}
+      <VideoModal 
+        isOpen={isVideoModalOpen} 
+        onClose={() => setIsVideoModalOpen(false)} 
+        videoSrc="/exam.mp4" 
+      />
     </div> // End of homepage-page-wrapper
   );
 };

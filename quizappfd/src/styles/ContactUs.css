@@ -5,10 +5,11 @@
   border-radius: 8px;
   margin: 20px;
   background-color: #f9f9f9;
+  color:black;
 }
 
 .contact-us-container h2 {
-  color: #333;
+  color: #150202;
   margin-bottom: 15px;
   text-align: center;
 }
@@ -21,6 +22,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  color:black;
 }
 
 .detail-item i {

@@ -76,7 +76,7 @@ exports.submitTest = async (req, res) => {
   try {
     await executeQuery("START TRANSACTION");
 
-    const responseInserts = []; // ✅ Missing variable now declared
+    const responseInserts = []; 
 
     const questionsData = await executeQuery(
       "SELECT question_id, question_type, correct_answer, marks FROM questions WHERE test_id = ?",

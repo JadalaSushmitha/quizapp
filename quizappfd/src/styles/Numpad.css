@@ -1,73 +1,89 @@
-/* Numpad Container */
+/* Modern Numpad Styles */
 .numpad-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns, equal width */
-  gap: 8px; /* Space between buttons */
-  width: 250px; /* Adjust width as needed */
-  background-color: #f0f0f0; /* Light background for the numpad area */
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  border-radius: 12px;
 }
 
 /* Individual Numpad Buttons */
 .numpad-button {
-  background-color: #ffffff; /* White background for number buttons */
-  border: 1px solid #ccc; /* Light grey border */
-  border-radius: 6px;
+  background: linear-gradient(145deg, #3a4d63, #2c3e50);
+  border: none;
+  border-radius: 10px;
   padding: 15px 0;
-  font-size: 1.5em; /* Larger font size for readability */
-  font-weight: bold;
-  color: #333; /* Dark grey text */
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #ecf0f1;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  user-select: none; /* Prevent text selection on click */
+  transition: all 0.2s ease;
+  user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 50px;
 }
 
 .numpad-button:hover {
-  background-color: #e0e0e0; /* Slightly darker on hover */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+  background: linear-gradient(145deg, #34495e, #2c3e50);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .numpad-button:active {
-  background-color: #d0d0d0; /* Even darker when pressed */
-  transform: translateY(1px); /* Slight press effect */
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inset shadow for pressed look */
+  transform: translateY(2px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Make the zero button wider */
+.numpad-button:nth-child(11) {
+  grid-column: span 2;
 }
 
 /* Specific styles for Clear and Backspace buttons */
-
 .numpad-clear {
-  background-color: #dc3545; /* Red for Clear */
+  background: linear-gradient(145deg, #e74c3c, #c0392b);
   color: white;
 }
 
 .numpad-clear:hover {
-  background-color: #c82333; /* Darker red on hover */
-}
-
-.numpad-clear:active {
-  background-color: #bd2130;
+  background: linear-gradient(145deg, #c0392b, #a93226);
 }
 
 .numpad-backspace {
-  background-color: #ffc107; /* Orange/Yellow for Backspace */
-  color: #333; /* Dark text for contrast */
+  background: linear-gradient(145deg, #f39c12, #d35400);
+  color: white;
 }
 
 .numpad-backspace:hover {
-  background-color: #e0a800; /* Darker orange on hover */
+  background: linear-gradient(145deg, #e67e22, #d35400);
 }
 
-.numpad-backspace:active {
-  background-color: #d39e00;
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .numpad-button {
+    height: 45px;
+    font-size: 1.2rem;
+  }
 }
 
-/* Styles for the '0' key to span two columns, if desired (calculator style) */
-/* This requires adjusting the 'keys' array in Numpad.jsx and potentially grid-template-columns */
-/* For example, if '0' is the last key on its row and you want it to span */
-/* You would need to add a specific class to the '0' button and apply grid-column: span 2; */
-/* For the current layout, it will just be a regular button */
+/* Add subtle glow effect on hover */
+.numpad-button:hover {
+  box-shadow: 
+    0 5px 15px rgba(0, 0, 0, 0.2),
+    0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Add subtle click animation */
+@keyframes buttonClick {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.numpad-button:active {
+  animation: buttonClick 0.2s ease;
+}

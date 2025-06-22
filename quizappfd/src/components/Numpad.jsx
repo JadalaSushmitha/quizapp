@@ -1,13 +1,13 @@
 // quizappfd/src/components/Numpad.jsx
 import React from 'react';
-import '../styles/Numpad.css'; // We'll create this CSS file
+import '../styles/Numpad.css';
 
 const Numpad = ({ onInput }) => {
   const keys = [
     '7', '8', '9',
     '4', '5', '6',
     '1', '2', '3',
-    '.', '0', 'B', // B for Backspace
+    '0', '.', 'B', // Rearranged for zero to be first in its row
     'C' // C for Clear
   ];
 
@@ -19,7 +19,7 @@ const Numpad = ({ onInput }) => {
           className={`numpad-button ${key === 'C' ? 'numpad-clear' : ''} ${key === 'B' ? 'numpad-backspace' : ''}`}
           onClick={() => onInput(key)}
         >
-          {key === 'B' ? '⌫' : key} {/* Unicode for backspace symbol */}
+          {key === 'B' ? '⌫' : key}
         </button>
       ))}
     </div>

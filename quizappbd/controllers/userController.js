@@ -277,19 +277,67 @@ const getCoursesAndTests = async (req, res) => {
 };
 
 // Update User Profile
-const updateUserProfile = async (req, res) => { //
-  const { id } = req.params; //
-  const { full_name, phone, college_name } = req.body; //
+const updateUserProfile = async (req, res) => {
+  const { id } = req.params;
+  const { full_name, phone, college_name, college_id } = req.body;
+  const profilePic = req.file?.filename; // Get the uploaded profile picture filename
 
   try {
-    await db.promise().query( //
-      `UPDATE users SET full_name = ?, phone = ?, college_name = ? WHERE id = ?`, //
-      [full_name, phone, college_name, id] //
+    // Validate user ID
+    if (req.user.id != id) {
+      return res.status(403).json({ message: "You can only update your own profile" });
+    }
+    
+    // Validate required fields
+    if (!full_name || !phone || !college_name || !college_id) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    
+    // First, get the current user data to check if we need to update the profile pic
+    const [currentUser] = await db.promise().query(
+      "SELECT profile_pic FROM users WHERE id = ?", 
+      [id]
     );
-    res.json({ message: "Profile updated successfully" }); //
+    
+    if (currentUser.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Prepare the query based on whether a new profile pic was uploaded
+    let query, params;
+    
+    if (profilePic) {
+      // If a new profile pic was uploaded, update it along with other fields
+      query = `UPDATE users SET full_name = ?, phone = ?, college_name = ?, college_id = ?, profile_pic = ? WHERE id = ?`;
+      params = [full_name, phone, college_name, college_id, profilePic, id];
+      console.log("Updating profile with new picture:", profilePic);
+    } else {
+      // Otherwise, just update the other fields
+      query = `UPDATE users SET full_name = ?, phone = ?, college_name = ?, college_id = ? WHERE id = ?`;
+      params = [full_name, phone, college_name, college_id, id];
+      console.log("Updating profile without changing picture");
+    }
+    
+    // Update user profile
+    const [result] = await db.promise().query(query, params);
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found or no changes made" });
+    }
+    
+    // Get updated user data
+    const [updatedUser] = await db.promise().query(
+      "SELECT id, full_name, email, phone, college_name, college_id, profile_pic FROM users WHERE id = ?",
+      [id]
+    );
+    
+    res.status(200).json({ 
+      message: "Profile updated successfully", 
+      user: updatedUser[0] 
+    });
   } catch (err) {
-    console.error("Profile update error:", err); // Added for better logging
-    res.status(500).json({ error: "Failed to update profile" }); //
+    console.error("Profile update error:", err);
+    res.status(500).json({ error: "Failed to update profile" });
   }
 };
 

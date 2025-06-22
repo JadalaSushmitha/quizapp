@@ -1,96 +1,161 @@
+// quizappbd/routes/admin.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const db = require('../models/db');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
-// Secret key for admin login token
-const SECRET_KEY = process.env.ADMIN_SECRET || 'adminsupersecret';
-
-// Route to create admin user (one-time setup, then disable this in production)
-router.post('/register-admin', async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const sql = 'INSERT INTO admin (username, password) VALUES (?, ?)';
-  db.query(sql, [username, hashedPassword], (err, result) => {
-    if (err) return res.status(500).send('Error registering admin');
-    res.send('Admin registered');
-  });
+// Setup multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Ensure the 'uploads/admin' directory exists
+        const uploadDir = './uploads/admin';
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        // Generate a unique filename with original extension
+        const ext = path.extname(file.originalname);
+        cb(null, `admin_${Date.now()}${ext}`);
+    }
 });
 
-// Admin login route
-router.post('/login-admin', (req, res) => {
-  const { username, password } = req.body;
-  const sql = 'SELECT * FROM admin WHERE username = ?';
-  db.query(sql, [username], async (err, results) => {
-    if (err) return res.status(500).send('Database error');
-    if (results.length === 0) return res.status(401).send('Invalid credentials');
-
-    const admin = results[0];
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(401).send('Invalid credentials');
-
-    const token = jwt.sign({ id: admin.id }, SECRET_KEY, { expiresIn: '1d' });
-    res.json({ token });
-  });
+const upload = multer({ 
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Limit file size to 5MB
+    },
+    fileFilter: (req, file, cb) => {
+        // Only allow image files
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'), false);
+        }
+    }
 });
+const { 
+    verifyAdmin, 
+    loginAdmin, 
+    registerAdmin,
+    forgotAdminPassword,
+    getAdminProfile,
+    updateAdminProfile,
+    changeAdminPassword,
+    updateProfilePicture,
+    getAllStudents, 
+    deleteStudent, 
+    getAllResults, 
+    getDetailedResult,
+    createTest,         
+    getAllTests,        
+    getTestDetails,     
+    updateTest,         
+    deleteTest,         
+    createQuestion,     
+    updateQuestion,     
+    deleteQuestion      
+} = require('../controllers/adminController');
 
-// Middleware to protect admin actions
-const verifyAdmin = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).send('No token');
+// Admin authentication routes
+router.post('/login-admin', loginAdmin);
+router.post('/register-admin', registerAdmin); 
+router.post('/forgot-password', forgotAdminPassword); 
 
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) return res.status(403).send('Invalid token');
-    req.admin = decoded;
-    next();
-  });
-};
+// Admin profile routes
+router.get('/profile', verifyAdmin, getAdminProfile);
+router.put('/profile', verifyAdmin, updateAdminProfile);
+router.put('/change-password', verifyAdmin, changeAdminPassword);
+router.put('/profile-picture', verifyAdmin, upload.single('profilePicture'), updateProfilePicture);
 
-// Get all registered students
-router.get('/students', verifyAdmin, (req, res) => {
-  db.query('SELECT id, full_name, email, phone, college_name, college_id FROM users', (err, results) => {
-    if (err) return res.status(500).send('Error fetching students');
-    res.json(results);
-  });
+// Student Management Routes
+router.get('/students', verifyAdmin, getAllStudents);
+router.delete('/students/:id', verifyAdmin, deleteStudent);
+
+// Test Results Routes
+router.get('/results', verifyAdmin, getAllResults);
+router.get('/results/details/:resultId', verifyAdmin, getDetailedResult);
+
+// Test Management Routes
+router.post('/tests', verifyAdmin, createTest); // Create a new test
+router.get('/tests', verifyAdmin, getAllTests); // Get all tests
+router.get('/tests/:testId', verifyAdmin, getTestDetails); // Get details for a specific test (including its questions)
+router.put('/tests/:testId', verifyAdmin, updateTest); // Update test details (Fixed: ensured this route is present)
+router.delete('/tests/:testId', verifyAdmin, deleteTest); // Delete a test (Fixed: ensured this route is present)
+
+// Question Management Routes for a specific test
+router.post('/tests/:testId/questions', verifyAdmin, createQuestion); // Create question for a test
+router.post('/tests/:testId/add-question-simple', verifyAdmin, (req, res) => {
+    // This is a simplified version that will be used as a fallback
+    try {
+        const { testId } = req.params;
+        const { question_text, question_type, correct_answer, explanation, marks, options } = req.body;
+        
+        // Insert question directly using callback style to avoid promise issues
+        db.query(
+            'INSERT INTO questions (test_id, question_text, question_type, correct_answer, explanation, marks) VALUES (?, ?, ?, ?, ?, ?)',
+            [testId, question_text, question_type, correct_answer || '', explanation || '', marks || 1],
+            (err, result) => {
+                if (err) {
+                    console.error("Error inserting question:", err);
+                    return res.status(500).json({ message: 'Failed to create question' });
+                }
+                
+                const questionId = result.insertId;
+                
+                // If it's an MCQ and has options, insert them
+                if (question_type === 'MCQ' && options && options.length > 0) {
+                    // Insert each option individually to avoid batch insert issues
+                    let optionsProcessed = 0;
+                    let optionsSuccess = 0;
+                    
+                    options.forEach(opt => {
+                        if (opt && opt.option_text) {
+                            db.query(
+                                'INSERT INTO options (question_id, option_text) VALUES (?, ?)',
+                                [questionId, opt.option_text],
+                                (optErr) => {
+                                    optionsProcessed++;
+                                    if (!optErr) optionsSuccess++;
+                                    
+                                    // When all options are processed, send response
+                                    if (optionsProcessed === options.length) {
+                                        res.status(201).json({ 
+                                            message: 'Question created successfully', 
+                                            questionId,
+                                            optionsAdded: optionsSuccess
+                                        });
+                                    }
+                                }
+                            );
+                        } else {
+                            optionsProcessed++;
+                            if (optionsProcessed === options.length) {
+                                res.status(201).json({ 
+                                    message: 'Question created successfully', 
+                                    questionId,
+                                    optionsAdded: optionsSuccess
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    // If not MCQ or no options, just return success
+                    res.status(201).json({ 
+                        message: 'Question created successfully', 
+                        questionId 
+                    });
+                }
+            }
+        );
+    } catch (error) {
+        console.error("Error in add-question-simple:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
-
-// Delete student by ID
-router.delete('/students/:id', verifyAdmin, (req, res) => {
-  const id = req.params.id;
-  db.query('DELETE FROM users WHERE id = ?', [id], (err) => {
-    if (err) return res.status(500).send('Delete failed');
-    res.send('Student deleted');
-  });
-});
-
-// View all results (if results table exists)
-router.get('/results', verifyAdmin, (req, res) => {
-  // Add pagination params (page, limit)
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 20;
-  const offset = (page - 1) * limit;
-
-  const sql = `
-    SELECT r.result_id, r.test_id, r.user_id, r.score, r.total_questions, r.attempted_questions, 
-           r.correct_answers, r.percentage, r.submission_time,
-           u.full_name AS student_name, u.email AS student_email,
-           t.test_name, t.course_name
-    FROM test_results r
-    JOIN users u ON r.user_id = u.id
-    JOIN tests t ON r.test_id = t.id
-    ORDER BY r.submission_time DESC
-    LIMIT ? OFFSET ?`;
-
-  db.query(sql, [limit, offset], (err, results) => {
-  if (err) {
-    console.error("Results API DB error:", err);
-    return res.status(500).send('Error fetching results');
-  }
-  console.log("Fetched results:", results);
-  res.json(results);
-});
-
-});
+router.put('/questions/:questionId', verifyAdmin, updateQuestion); // Update a specific question
+router.delete('/questions/:questionId', verifyAdmin, deleteQuestion); // Delete a specific question
 
 module.exports = router;

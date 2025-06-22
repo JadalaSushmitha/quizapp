@@ -12,7 +12,7 @@ const {
   getCoursesAndTests,
   getUserResults,
   updateUserProfile,
-  getProfileDetails // NEWLY IMPORTED
+  getProfileDetails 
 } = require("../controllers/userController");
 const authenticateJWT = require("../middleware/authMiddleware");
 
@@ -40,8 +40,8 @@ router.get("/dashboard/:id", authenticateJWT, getUserDashboard);
 router.post("/change-password", authenticateJWT, changePassword);
 router.get('/courses', authenticateJWT, getCoursesAndTests);
 router.get("/results/:id", authenticateJWT, getUserResults);
-router.put("/profile/:id", authenticateJWT, updateUserProfile);
-router.get("/profile-details", authenticateJWT, getProfileDetails); // NEW ROUTE FOR PROFILE DETAILS
+router.put("/profile/:id", authenticateJWT, upload.single("profile_pic"), updateUserProfile);
+router.get("/profile-details", authenticateJWT, getProfileDetails); 
 
 // Sample route with JWT data
 router.get("/dashboard-direct/:id", authenticateJWT, async (req, res) => {

@@ -224,11 +224,13 @@
 .option-item .option-label {
     font-weight: bold;
     margin-right: 8px;
+    color:#000;
     min-width: 20px; /* Ensure labels align */
 }
 
 .option-item .option-text {
     flex-grow: 1;
+    color:#000e03;
 }
 
 /* Styling for correct answers */
