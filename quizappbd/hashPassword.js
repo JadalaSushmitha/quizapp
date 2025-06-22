@@ -6,4 +6,4 @@ async function hashPassword(plainPassword) {
   console.log('Hashed password:', hash);
 }
 
-hashPassword('Sushmitha@123');  // <-- Replace with your admin password here
+hashPassword('password');  // <-- Replace with your admin password here
